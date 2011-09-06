@@ -26,12 +26,19 @@ if __name__ == '__main__':
     for fastq_name in sys.argv[1:]:
         fastq = open(fastq_name, 'r')
         fasta = open(((fastq_name[::-1]).replace('qtsaf', 'atsaf', 1))[::-1], 'w')
-
+        
+        read = True
         while True:
             line = fastq.readline()
             line = string.strip(line)
             if line == '':
                 break
+            if line[0] == '@':
+                read = True
+            if line[0] == '+':
+                read = False
+            if read == True:
+                fasta.write("%s\n" % (line))
 
         fasta.close()
         fastq.close()
