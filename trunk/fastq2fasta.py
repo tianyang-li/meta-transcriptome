@@ -18,6 +18,10 @@
 #  Author Tianyang Li
 #  E-Mail tmy1018 gmail com
 
+'''
+fastq2fasta.py {*.fastq files} 
+'''
+
 import sys
 import fileinput
 import string
