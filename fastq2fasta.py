@@ -38,6 +38,7 @@ if __name__ == '__main__':
             if line == '':
                 break
             if line[0] == '@':
+                line[0] = '>'
                 read = True
             if line[0] == '+':
                 read = False
