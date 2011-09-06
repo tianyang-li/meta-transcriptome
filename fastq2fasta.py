@@ -20,12 +20,19 @@
 
 import sys
 import fileinput
+import string
 
 if __name__ == '__main__':
     for fastq_name in sys.argv[1:]:
         fastq = open(fastq_name, 'r')
         fasta = open(((fastq_name[::-1]).replace('qtsaf', 'atsaf', 1))[::-1], 'w')
-        #hello
+
+        while True:
+            line = fastq.readline()
+            line = string.strip(line)
+            if line == '':
+                break
+
         fasta.close()
         fastq.close()
 
