@@ -22,6 +22,11 @@ import sys
 import fileinput
 
 if __name__ == '__main__':
-    for fastq in fileinput.input(mode = 'r'):
+    for fastq_name in sys.argv[1:]:
+        fastq = open(fastq_name, 'r')
+        fasta = open(((fastq_name[::-1]).replace('qtsaf', 'atsaf', 1))[::-1], 'w')
+        fasta.close()
+        fastq.close()
+
     sys.exit(0)
 
