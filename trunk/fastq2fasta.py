@@ -31,17 +31,21 @@ if __name__ == '__main__':
         fastq = open(fastq_name, 'r')
         fasta = open(((fastq_name[::-1]).replace('qtsaf', 'atsaf', 1))[::-1], 'w')
         
-        state = 0
         while True:
             line = fastq.readline()
             line = string.strip(line)
             if line == '':
                 break
-            if state == 0:
-                line = '>' + line[1:]
-            if state == 1 or state == 0:
+            line = '>' + line[1:]
+            seq = 0
+            while line[0] != '+':
+                seq = seq + 1
                 fasta.write("%s\n" % (line))
-            state = (state + 1) % 4
+                line = fastq.readline()
+                line = string.strip(line)
+            while seq != 1:
+                fastq.readline()
+                seq = seq - 1
 
         fasta.close()
         fastq.close()
