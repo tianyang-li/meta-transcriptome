@@ -37,15 +37,16 @@ if __name__ == '__main__':
             if line == '':
                 break
             line = '>' + line[1:]
-            seq = 0
+            seq_len = 0 - len(line)
             while line[0] != '+':
-                seq = seq + 1
+                seq_len = seq_len + len(line)
                 fasta.write("%s\n" % (line))
                 line = fastq.readline()
                 line = string.strip(line)
-            while seq != 1:
-                fastq.readline()
-                seq = seq - 1
+            while seq_len != 0:
+                line = fastq.readline()
+                line = string.strip(line)
+                seq_len = seq_len - len(line)
 
         fasta.close()
         fastq.close()
