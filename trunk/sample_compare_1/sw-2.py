@@ -31,7 +31,8 @@ import sys
 from Bio import SeqIO
 
 def SWCompare2(f1, f2):
-    for seq1 in SeqIO
+    for seq1 in SeqIO.parse(f1, 'fasta'):
+        for seq2 in SeqIO.parse(f2, 'fasta'): 
 
 if __name__ == '__main__':
     fout = open("results", 'w')
