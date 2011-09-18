@@ -19,7 +19,7 @@
 #  E-Mail tmy1018 gmail com
 
 '''
-Compares two sets of assembled transcriptome reads using SW
+Compares two sets of assembled transcriptome reads (fasta) using SW
 '''
 
 '''
@@ -28,18 +28,14 @@ TODO: utilize read count
 
 import sys
 
-def SWCompare2(reads1, reads2):
-    for read1 in reads1:
-        for read2 in reads2:
-            # compare read1, read2
+from Bio import SeqIO
+
+def SWCompare2(f1, f2):
+    for seq1 in SeqIO
 
 if __name__ == '__main__':
-    f1 = open(sys.argv[1], 'r')
-    f2 = open(sys.argv[2], 'r')
     fout = open("results", 'w')
-
-    f1.close()
-    f2.close()
+    SwCompare2(sys.argv[1], sys.argv[2])
     fout.close()
     sys.exit(0)
 
