@@ -30,23 +30,26 @@ import sys
 import subprocess
 import tempfile
 import os
-import shutil
 from Bio import SeqIO
+from Bio.Emboss.Applications import WaterCommandline
 
 def SWCompare2(f1, f2):
-    tmpd = tempfile.mkdtemp(prefix = 'sw-2d')  # temp directory for files doing pairwise SW
+    results = open(f1 + f2 + ".water", 'w')
     f1_tmp = []
+    sw_out = 0
     for seq1 in SeqIO.parse(f1, 'fasta'):
         (tmpf_handle, tmpf_path) = tempfile.mkstemp(prefix = 'sw-2f')  # temp file for storing sequence
         f1_tmp.append(tmpf_path)
         SeqIO.write([seq1], tmpf_path, 'fasta')
-    shutil.rmtree(tmpd, ignore_errors = True)  # TODO: handle errors
+        water_cline = WaterCommandLine(asequence = tmpf_patf, bsequence = f2
+                                       , gapopen = 10, gapextend = 0.5
+                                       , outfile = "stdout")
+        sw_out = sw_out + 1
+    results.close()
     for f1_f in f1_tmp:
         os.remove(f1_f)
 
 if __name__ == '__main__':
-    fout = open("results", 'w')
     SWCompare2(sys.argv[1], sys.argv[2])
-    fout.close()
     sys.exit(0)
 
