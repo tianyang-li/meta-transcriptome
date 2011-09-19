@@ -30,18 +30,23 @@ import sys
 import subprocess
 import tempfile
 import os
+import shutil
 from Bio import SeqIO
 
 def SWCompare2(f1, f2):
-    tmpd = tempfile.mkdtemp()  # temp directory for files doing pairwise SW
+    tmpd = tempfile.mkdtemp(prefix = 'sw-2d')  # temp directory for files doing pairwise SW
+    f1_tmp = []
     for seq1 in SeqIO.parse(f1, 'fasta'):
-        (tmpf_handle, tmpf_path) = tempfile.mkstemp()  # temp file for storing sequence
-        tmpf = open(tmpf_path, 'w')
-        tmpf.close()
+        (tmpf_handle, tmpf_path) = tempfile.mkstemp(prefix = 'sw-2f')  # temp file for storing sequence
+        f1_tmp.append(tmpf_path)
+        SeqIO.write([seq1], tmpf_path, 'fasta')
+    shutil.rmtree(tmpd, ignore_errors = True)  # TODO: handle errors
+    for f1_f in f1_tmp:
+        os.remove(f1_f)
 
 if __name__ == '__main__':
     fout = open("results", 'w')
-    SwCompare2(sys.argv[1], sys.argv[2])
+    SWCompare2(sys.argv[1], sys.argv[2])
     fout.close()
     sys.exit(0)
 
