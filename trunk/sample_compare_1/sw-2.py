@@ -42,7 +42,7 @@ def SWCompare2(f1, f2):
     f1_tmp = []
     for seq1 in SeqIO.parse(f1, 'fasta'):
         (tmpf_handle, tmpf_path) = tempfile.mkstemp(prefix = 'sw-2f')  # temp file for storing sequence
-        tmpf_handle.close()  # close these files
+        os.close(tmpf_handle)  # close these files
         f1_tmp.append(tmpf_path)
         SeqIO.write([seq1], tmpf_path, 'fasta')
         water_cline = WaterCommandline(asequence = tmpf_path, bsequence = f2
