@@ -28,6 +28,7 @@ TODO: utilize read count
 
 import sys
 import subprocess
+import shlex
 import tempfile
 import os
 from Bio import SeqIO
@@ -46,6 +47,10 @@ def SWCompare2(f1, f2):
         water_cline = WaterCommandline(asequence = tmpf_path, bsequence = f2
                                        , gapopen = 10, gapextend = 0.5
                                        , outfile = "stdout")
+        water_run = subprocess.Popen(shlex.split(water_cline.__str__())
+                                     , stdout = subprocess.PIPE)
+        for water_out in water_run.stdout.readlines():
+            results.write(water_out)
     results.close()
     for f1_f in f1_tmp:
         os.remove(f1_f)
