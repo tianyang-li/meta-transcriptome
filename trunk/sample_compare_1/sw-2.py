@@ -36,7 +36,7 @@ from Bio.Emboss.Applications import WaterCommandline
 
 def SWCompare2(f1, f2):
     def StripFasta(fname):
-        return ((fname[::-1]).replace('atsaf', '', 1))[::-1]
+        return ((fname[::-1]).replace('.atsaf', '', 1))[::-1]
         
     results = open(StripFasta(f1) + "." + StripFasta(f2) + ".water", 'w')
     f1_tmp = []
