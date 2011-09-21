@@ -31,6 +31,7 @@ import subprocess
 import shlex
 import tempfile
 import os
+import string
 from Bio import SeqIO
 from Bio.Emboss.Applications import WaterCommandline
 
@@ -39,7 +40,9 @@ def SWCompare2(f1, f2):
         return ((fname[::-1]).replace("atsaf.", "", 1))[::-1]
         
     results = open(StripFasta(f1) + "." + StripFasta(f2) + ".water", 'w')
+    norm_res = open(StripFasta(f1) + "." + StripFasta(f2) + ".normal", 'w')
     f1_tmp = []
+    f2_read = list(SeqIO.parse(f2, 'fasta'))
     for seq1 in SeqIO.parse(f1, 'fasta'):
         (tmpf_handle, tmpf_path) = tempfile.mkstemp(prefix = 'sw-2f')  # temp file for storing sequence
         os.close(tmpf_handle)  # close these files
@@ -50,9 +53,16 @@ def SWCompare2(f1, f2):
                                        , outfile = "stdout")
         water_run = subprocess.Popen(shlex.split(water_cline.__str__())
                                      , stdout = subprocess.PIPE)
+        f2_i = 0
         for water_out in water_run.stdout.readlines():
             results.write(water_out)
+            water_out = string.strip(water_out)
+            strip_s = water_out.replace("# Score: ", "", 1)
+            if water_out != strip_s:
+                norm_res.write("%f\n" % (float(strip_s) / min(float(len(seq1.seq)), float(len(f2_read[f2_i].seq)))))
+                f2_i = f2_i + 1
     results.close()
+    norm_res.close()
     for f1_f in f1_tmp:
         os.remove(f1_f)
 
