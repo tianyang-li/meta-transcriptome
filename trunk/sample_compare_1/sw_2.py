@@ -54,14 +54,20 @@ def SWCompare2(f1, f2):
         water_run = subprocess.Popen(shlex.split(water_cline.__str__())
                                      , stdout = subprocess.PIPE)
         f2_i = 0
+        al_len = 0
         for water_out in water_run.stdout.readlines():
             results.write(water_out)
             water_out = string.strip(water_out)
-            strip_s = water_out.replace("# Score: ", "", 1)
+            strip_len = water_out.replace("# Length: ", "", 1)
+            if water_out != strip_len:
+                al_len = int(strip_len)
+            strip_len = water_out.replace("# Score: ", "", 1)
             if water_out != strip_s:
-                # {norm value} {occurrence}
+                al_score = float(strip_s)
+                # {norm - SW/min(a,b)} {norm - SW/al_len} {occurrence}
                 norm_res.write("%f %d\n" 
-                               % (float(strip_s) / min(float(len(seq1.seq)), float(len(f2_read[f2_i].seq)))
+                               % (al_score / min(float(len(seq1.seq)), float(len(f2_read[f2_i].seq)))
+                               , (al_score / float(al_len))
                                , int(float(string.split(string.split(f2_read[f2_i].description,' ')[2],'=')[1]) * float(string.split(string.split(seq1.description,' ')[2],'=')[1]))))
                 f2_i = f2_i + 1
     results.close()
