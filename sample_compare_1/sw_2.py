@@ -65,10 +65,10 @@ def SWCompare2(f1, f2):
             if water_out != strip_s:
                 al_score = float(strip_s)
                 # {norm - SW/min(a,b)} {norm - SW/al_len} {occurrence}
-                norm_res.write("%f %f %d\n" 
+                norm_res.write("%f %d\n" 
                                % (al_score / min(float(len(seq1.seq)), float(len(f2_read[f2_i].seq)))
                                , (al_score / float(al_len))
-                               , int(float(string.split(string.split(f2_read[f2_i].description,' ')[2],'=')[1]) * float(string.split(string.split(seq1.description,' ')[2],'=')[1]))))
+                               , int(float(string.split(string.split(f2_read[f2_i].description, " ")[2], "=")[1]) * float(string.split(string.split(seq1.description, " ")[2], "=")[1]))))
                 f2_i = f2_i + 1
     results.close()
     norm_res.close()
