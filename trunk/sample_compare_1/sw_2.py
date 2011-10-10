@@ -70,7 +70,7 @@ def SWCompare2(f1, f2, cutoff):
                 al_score = float(strip_s)
                 if al_score >= cutoff:
                     sim_seq = [seq1, f2_read[f2_i]]
-                    SeqIO.write(sim_seq, file_name + "/" + ''.join(random.choice(strin    g.ascii_lowercase + string.digits, 'fasta')
+                    SeqIO.write(sim_seq, file_name + "/" + "".join(random.choice(string.ascii_lowercase + string.digits, 'fasta')
                 # {norm - SW/min(a,b)} {norm - SW/al_len} {occurrence}
                 norm_res.write("%f %d\n" 
                                % (al_score / min(float(len(seq1.seq)), float(len(f2_read[f2_i].seq)))
