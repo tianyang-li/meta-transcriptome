@@ -46,7 +46,10 @@ def SWCompare2(f1, f2, cutoff):
     norm_res = open(file_name + ".normal", 'w')
     f1_tmp = []
     f2_read = list(SeqIO.parse(f2, 'fasta'))
-    os.mkdir(file_name)
+    d_mit_t = file_name + "-min_t"
+    d_al_len = file_name + "-al_len"
+    os.mkdir(d_mit_t)
+    os.mkdir(d_al_len)
     for seq1 in SeqIO.parse(f1, 'fasta'):
         (tmpf_handle, tmpf_path) = tempfile.mkstemp(prefix = 'sw-2f')  # temp file for storing sequence
         os.close(tmpf_handle)  # close these files
@@ -68,14 +71,18 @@ def SWCompare2(f1, f2, cutoff):
             strip_s = water_out.replace("# Score: ", "", 1)
             if water_out != strip_s:
                 al_score = float(strip_s)
-                if al_score >= cutoff:
-                    sim_seq = [seq1, f2_read[f2_i]]
-                    SeqIO.write(sim_seq, file_name + "/" + "".join(random.choice(string.ascii_lowercase + string.digits) for x in range(10)), 'fasta')
                 # {norm - SW/min(a,b)} {norm - SW/al_len} {occurrence}
+                norm1 = al_score / min(float(len(seq1.seq)), float(len(f2_read[f2_i].seq)))
+                norm2 = al_score / float(al_len)
                 norm_res.write("%f %f %d\n" 
-                               % (al_score / min(float(len(seq1.seq)), float(len(f2_read[f2_i].seq)))
-                               , (al_score / float(al_len))
+                               % (norm1, norm2
                                , int(float(string.split(string.split(f2_read[f2_i].description, " ")[2], "=")[1]) * float(string.split(string.split(seq1.description, " ")[2], "=")[1]))))
+                if norm1 >= cutoff:
+                    sim_seq = [seq1, f2_read[f2_i]]
+                    SeqIO.write(sim_seq, d_mit_t + "/" + "".join(random.choice(string.ascii_lowercase + string.digits) for x in range(10)), 'fasta')
+                if norm2 >= cutoff:
+                    sim_seq = [seq1, f2_read[f2_i]]
+                    SeqIO.write(sim_seq, d_al_len + "/" + "".join(random.choice(string.ascii_lowercase + string.digits) for x in range(10)), 'fasta')
                 f2_i = f2_i + 1
     results.close()
     norm_res.close()
