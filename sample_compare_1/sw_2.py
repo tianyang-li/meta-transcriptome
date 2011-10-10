@@ -20,6 +20,7 @@
 
 '''
 Compares two sets of assembled transcriptome reads (fasta) using SW
+sw_2.py {fasta file 1} {fasta file 2} {similar cutoff}
 '''
 
 '''
@@ -32,17 +33,20 @@ import shlex
 import tempfile
 import os
 import string
+import random
 from Bio import SeqIO
 from Bio.Emboss.Applications import WaterCommandline
 
-def SWCompare2(f1, f2):
+def SWCompare2(f1, f2, cutoff):
     def StripFasta(fname):
         return ((fname[::-1]).replace("atsaf.", "", 1))[::-1]
         
-    results = open(StripFasta(f1) + "." + StripFasta(f2) + ".water", 'w')
-    norm_res = open(StripFasta(f1) + "." + StripFasta(f2) + ".normal", 'w')
+    file_name = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(20))  # file names for a run
+    results = open(file_name + ".water", 'w')
+    norm_res = open(file_name + ".normal", 'w')
     f1_tmp = []
     f2_read = list(SeqIO.parse(f2, 'fasta'))
+    os.mkdir(file_name)
     for seq1 in SeqIO.parse(f1, 'fasta'):
         (tmpf_handle, tmpf_path) = tempfile.mkstemp(prefix = 'sw-2f')  # temp file for storing sequence
         os.close(tmpf_handle)  # close these files
@@ -64,6 +68,9 @@ def SWCompare2(f1, f2):
             strip_s = water_out.replace("# Score: ", "", 1)
             if water_out != strip_s:
                 al_score = float(strip_s)
+                if al_score >= cutoff:
+                    sim_seq = [seq1, f2_read[f2_i]]
+                    SeqIO.write(sim_seq, file_name + "/" + ''.join(random.choice(strin    g.ascii_lowercase + string.digits, 'fasta')
                 # {norm - SW/min(a,b)} {norm - SW/al_len} {occurrence}
                 norm_res.write("%f %d\n" 
                                % (al_score / min(float(len(seq1.seq)), float(len(f2_read[f2_i].seq)))
@@ -76,6 +83,6 @@ def SWCompare2(f1, f2):
         os.remove(f1_f)
 
 if __name__ == '__main__':
-    SWCompare2(sys.argv[1], sys.argv[2])
+    SWCompare2(sys.argv[1], sys.argv[2], float(sys.argv[3]))
     sys.exit(0)
 
