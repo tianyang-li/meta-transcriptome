@@ -14,13 +14,20 @@
 #
 #  You should have received a copy of the GNU General Public License
 
+'''
+relate each file containing transcript sequences to each other using blastx
+'''
+
 from Bio import SeqIO
 import sys
 import string
 from Bio.Blast import NCBIWWW
 from Bio.Blast import NCBIXML
+from networkx import nx
+from networkx.algorithms.components.connected import number_connected_components
 
 def BlastClassify(fasta_files):
+    ac_gr = nx.Graph()  # graph where each node represents accessions within a single file 
     for fasta_file in fasta_files:
         for seq in SeqIO.parse(fasta_file, 'fasta'):
             blast_rec = list(NCBIXML.parse(NCBIWWW.qblast("blastx", "nr", seq.format('fasta'))))
@@ -29,6 +36,14 @@ def BlastClassify(fasta_files):
             for rec in blast_rec:
                 for align in rec.alignments:
                     seq_accession.append(string.split(string.split(align.hit_id, "|")[3], ".")[0])
+            if seq_accession != []:
+                ac_gr.add_node(seq_accession)
+    for ac1 in ac_gr.nodes():
+        for ac2 in ac_gr.nodes():
+            if not(ac1 is ac2):
+                if len(set(ac1) & set(ac2)) != 0:
+                    ac_gr.add_edge(ac1, ac2)
+    print number_connected_components(ac_gr)
         
 if __name__ == '__main__':
     BlastClassify(sys.argv[1:])
