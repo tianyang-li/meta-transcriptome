@@ -43,7 +43,7 @@ def BlastClassify(fasta_files):
     for ac1 in ac_gr.nodes():
         for ac2 in ac_gr.nodes():
             if ac1 != ac2:
-                if len(set(ac(ac1)[1]) & set(ac(ac2)[1])) != 0:
+                if len(set(ac[ac1][1]) & set(ac[ac2][1])) != 0:
                     ac_gr.add_edge(ac1, ac2)
     comp_n = 0
     for similar_trans in connected_components(ac_gr):
@@ -51,7 +51,7 @@ def BlastClassify(fasta_files):
         comp = {'component': comp_n}
         seq_n = 0
         for trans in similar_trans:
-            comp_seq['%d' % seq_n] = {'seq': trans[0].format('fasta'), 'accession': trans[1]}
+            comp_seq['%d' % seq_n] = {'seq': ac[trans][0].format('fasta'), 'accession': ac[trans][1]}
             seq_n = seq_n + 1
         comp['trans'] = comp_seq
         print json.dumps(comp, ensure_ascii = True)
