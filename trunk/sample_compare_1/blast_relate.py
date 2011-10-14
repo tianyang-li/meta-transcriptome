@@ -21,10 +21,10 @@ relate each file containing transcript sequences to each other using blastx
 from Bio import SeqIO
 import sys
 import string
-from Bio.Blast import NCBIWWW
-from Bio.Blast import NCBIXML
+from Bio.Blast import NCBIWWW, NCBIXML
 from networkx import nx
-from networkx.algorithms.components.connected import number_connected_components
+from networkx.algorithms.components.connected import connected_components
+import json
 
 def BlastClassify(fasta_files):
     ac = []  # a list of [seq, seq_accession]
@@ -45,7 +45,18 @@ def BlastClassify(fasta_files):
             if ac1 != ac2:
                 if len(set(ac(ac1)[1]) & set(ac(ac2)[1])) != 0:
                     ac_gr.add_edge(ac1, ac2)
-    print number_connected_components(ac_gr)
+    comp_n = 0
+    for similar_trans in connected_components(ac_gr):
+        comp_seq = {}
+        comp = {'component': comp_n}
+        seq_n = 0
+        for trans in similar_trans:
+            comp_seq['%d' % seq_n] = {'seq': trans[0].format('fasta'), 'accession': trans[1]}
+            seq_n = seq_n + 1
+        comp['trans'] = comp_seq
+        print json.dumps(comp, ensure_ascii = True)
+        comp_n = comp_n + 1
+    print >> sys.stderr, comp_n
         
 if __name__ == '__main__':
     BlastClassify(sys.argv[1:])
