@@ -25,14 +25,27 @@ from Bio.Blast import NCBIWWW, NCBIXML
 from networkx import nx
 from networkx.algorithms.components.connected import connected_components
 import json
+import time
 
 def BlastClassify(fasta_files):
     ac = []  # a list of [seq, seq_accession]
     ac_gr = nx.Graph()  # graph where each node represents accessions within a single file 
     for fasta_file in fasta_files:
         for seq in SeqIO.parse(fasta_file, 'fasta'):
-            blast_rec = list(NCBIXML.parse(NCBIWWW.qblast("blastx", "nr", seq.format('fasta'))))
-            blast_rec.extend(list(NCBIXML.parse(NCBIWWW.qblast("blastx", "env_nr", seq.format('fasta')))))
+            print >> sys.stderr, time.asctime()
+            print >> sys.stderr, seq.format('fasta')
+            while True:
+                try:
+                    blast_rec = list(NCBIXML.parse(NCBIWWW.qblast("blastx", "nr", seq.format('fasta'))))
+                    break
+                except:
+                    print >> sys.stderr, "Error occurred with BLAST"
+            while True:
+                try:
+                    blast_rec.extend(list(NCBIXML.parse(NCBIWWW.qblast("blastx", "env_nr", seq.format('fasta')))))
+                    break
+                except:
+                    print >> sys.stderr, "Error occurred with BLAST"
             seq_accession = []
             for rec in blast_rec:
                 for align in rec.alignments:
