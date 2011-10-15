@@ -32,16 +32,19 @@ def BlastClassify(fasta_files):
     ac_gr = nx.Graph()  # graph where each node represents accessions within a single file 
     for fasta_file in fasta_files:
         for seq in SeqIO.parse(fasta_file, 'fasta'):
-            print >> sys.stderr, time.asctime()
             print >> sys.stderr, seq.format('fasta')
             while True:
                 try:
+                    print >> sys.stderr, "nr blastx"
+                    print >> sys.stderr, time.asctime()
                     blast_rec = list(NCBIXML.parse(NCBIWWW.qblast("blastx", "nr", seq.format('fasta'))))
                     break
                 except BaseException as err:
                     print >> sys.stderr, "Error: %s" % str(err)
             while True:
                 try:
+                    print >> sys.stderr, "env_nr blastx"
+                    print >> sys.stderr, time.asctime()
                     blast_rec.extend(list(NCBIXML.parse(NCBIWWW.qblast("blastx", "env_nr", seq.format('fasta')))))
                     break
                 except BaseException as err:
