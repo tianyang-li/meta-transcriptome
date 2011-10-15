@@ -39,13 +39,13 @@ def BlastClassify(fasta_files):
                     blast_rec = list(NCBIXML.parse(NCBIWWW.qblast("blastx", "nr", seq.format('fasta'))))
                     break
                 except BaseException as err:
-                    print >> sys.stderr, "Error: %s" % err
+                    print >> sys.stderr, "Error: %s" % str(err)
             while True:
                 try:
                     blast_rec.extend(list(NCBIXML.parse(NCBIWWW.qblast("blastx", "env_nr", seq.format('fasta')))))
                     break
                 except BaseException as err:
-                    print >> sys.stderr, "Error: %s" % err
+                    print >> sys.stderr, "Error: %s" % str(err)
             seq_accession = []
             for rec in blast_rec:
                 for align in rec.alignments:
