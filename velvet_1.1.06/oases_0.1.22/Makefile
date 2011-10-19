@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -Wall
-DEBUG = -g
+CFLAGS = -Wall -ggdb
+DEBUG = -ggdb
 LDFLAGS = -lm
 OPT = -O3
 MAXKMERLENGTH=31
@@ -47,7 +47,7 @@ zlib:
 clean-zlib:
 endif
 
-VELVET_DIR=../../velvet
+VELVET_DIR=../../velvet_1.1.06
 VELVET_SRC_DIR=$(VELVET_DIR)/src
 VELVET_OBJ = recycleBin utility graph passageMarker readSet tightString kmer dfibHeap dfib concatenatedGraph graphStats fibHeap fib readCoherentGraph allocArray
 VELVET_FILES = $(VELVET_OBJ:%=$(VELVET_DIR)/obj/%.o)
