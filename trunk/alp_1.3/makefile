@@ -3,4 +3,4 @@ CFLAGS = -Wall
 
 all:
 	cd src && $(CC) $(CFLAGS) -c *.cpp
-	$(CC) $(CFLGAS) src/*.o -o alp13
+	$(CC) $(CFLAGS) src/*.o -o alp13
