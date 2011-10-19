@@ -1,6 +1,8 @@
 CC = g++
-CFLAGS = -Wall -O3
+CFLAGS = -Wall -ggdb
 
-all:
+all: alp13
+	
+alp13: src/*
 	cd src && $(CC) $(CFLAGS) -c *.cpp
 	$(CC) $(CFLAGS) src/*.o -o alp13

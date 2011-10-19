@@ -2157,7 +2157,7 @@ bool check_time_flag_)
 							)
 						{
 							
-							throw error("The parameters cannot be correctly calculated for the given accuracy, calculation time and memory usage\n",1);
+							//throw error("The parameters cannot be correctly calculated for the given accuracy, calculation time and memory usage\n",1);
 						};
 
 
@@ -2188,7 +2188,7 @@ bool check_time_flag_)
 									)
 								{
 									
-									throw error("The parameters cannot be correctly calculated for the given accuracy, calculation time and memory usage\n",1);
+									//throw error("The parameters cannot be correctly calculated for the given accuracy, calculation time and memory usage\n",1);
 								};
 							};
 
