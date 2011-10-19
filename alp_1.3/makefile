@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall
+CFLAGS = -Wall -O3
 
 all:
 	cd src && $(CC) $(CFLAGS) -c *.cpp
