@@ -2,6 +2,7 @@
 
 
 #include <vector>
+#include <cfloat>
 
 #include "sls_alp_data.hpp"
 #include "sls_alp_sim.hpp"
@@ -10,6 +11,7 @@
 #include "gumbel_params.hpp"
 
 using namespace Sls;
+using namespace std;
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -258,7 +260,8 @@ void command_line_interpreter(//extracts parameters from the command line
 				throw error("Error - parameter -max_time has been defined already\n",1);
 			};
 
-			max_time_=atof(argv[2*i+2]);
+			// max_time_=atof(argv[2*i+2]);
+			max_time_=DBL_MAX;
 			max_time_flag=true;
 			continue;
 		};
