@@ -77,7 +77,7 @@ def SWCompare2(f1, f2, cutoff):
                 # {norm - SW/min(a,b)} {norm - SW/al_len} {occurrence}
                 norm1 = al_score / min(float(len(seq1.seq)), float(len(f2_read[f2_i].seq)))
                 norm2 = al_score / float(al_len)
-                pval = 0.0 - numpy.expm1(0.0 - K * float(len(seq1.seq)) * float(len(f2_read[f2_i].seq)) * math.exp(0 - Lambda * al_score))
+                pval = 0.0 - numpy.expm1(0.0 - K * len(seq1.seq) * len(f2_read[f2_i].seq) * math.exp(0.0 - Lambda * al_score))
                 norm_res.write("%f %f %f %d\n" 
                                % (norm1, norm2, pval
                                , int(float(string.split(string.split(f2_read[f2_i].description, " ")[2], "=")[1]) * float(string.split(string.split(seq1.description, " ")[2], "=")[1]))))
