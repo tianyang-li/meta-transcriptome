@@ -34,10 +34,14 @@ import tempfile
 import os
 import string
 import random
+import numpy
+import math
 from Bio import SeqIO
 from Bio.Emboss.Applications import WaterCommandline
 
 def SWCompare2(f1, f2, cutoff):
+    K = 0.620391
+    Lambda = 1.33249
     def StripFasta(fname):
         return ((fname[::-1]).replace("atsaf.", "", 1))[::-1]
         
@@ -74,8 +78,9 @@ def SWCompare2(f1, f2, cutoff):
                 # {norm - SW/min(a,b)} {norm - SW/al_len} {occurrence}
                 norm1 = al_score / min(float(len(seq1.seq)), float(len(f2_read[f2_i].seq)))
                 norm2 = al_score / float(al_len)
-                norm_res.write("%f %f %d\n" 
-                               % (norm1, norm2
+                pval = 0 - numpy.expm1(0 - K * float(len(seq1.seq)) * float(len(f2_read[f2_i].seq)) * math.exp(0 - Lambda * al_score))
+                norm_res.write("%f %f %f %d\n" 
+                               % (norm1, norm2, pval
                                , int(float(string.split(string.split(f2_read[f2_i].description, " ")[2], "=")[1]) * float(string.split(string.split(seq1.description, " ")[2], "=")[1]))))
                 if norm1 >= cutoff:
                     f_sim_seq = d_min_t + "/" + "".join(random.choice(string.ascii_lowercase + string.digits) for x in range(10))
