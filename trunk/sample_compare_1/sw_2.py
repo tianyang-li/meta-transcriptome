@@ -58,7 +58,7 @@ def SWCompare2(f1, f2, cutoff):
         water_cline = WaterCommandline(asequence = tmpf_path, bsequence = f2
                                        , gapopen = 5, gapextend = 2
                                        , outfile = "stdout")
-        water_run = subprocess.Popen(shlex.split(water_cline.__str__() + "-datafile ./SW-1.2")
+        water_run = subprocess.Popen(shlex.split(water_cline.__str__())
                                      , stdout = subprocess.PIPE)
         f2_i = 0
         al_len = 0
