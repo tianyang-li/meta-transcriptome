@@ -56,9 +56,9 @@ def SWCompare2(f1, f2, cutoff):
         f1_tmp.append(tmpf_path)
         SeqIO.write([seq1], tmpf_path, 'fasta')
         water_cline = WaterCommandline(asequence = tmpf_path, bsequence = f2
-                                       , gapopen = 10, gapextend = 0.5
+                                       , gapopen = 5, gapextend = 2
                                        , outfile = "stdout")
-        water_run = subprocess.Popen(shlex.split(water_cline.__str__())
+        water_run = subprocess.Popen(shlex.split(water_cline.__str__() + "-datafile ./SW-1.2")
                                      , stdout = subprocess.PIPE)
         f2_i = 0
         al_len = 0
