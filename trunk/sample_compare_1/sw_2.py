@@ -40,8 +40,8 @@ from Bio import SeqIO
 from Bio.Emboss.Applications import WaterCommandline
 
 def SWCompare2(f1, f2, cutoff):
-    K = 0.620391
-    Lambda = 1.33249
+    K = 0.25239
+    Lambda = 1.13865
     
     def StripFasta(fname):
         return ((fname[::-1]).replace("atsaf.", "", 1))[::-1]
@@ -59,9 +59,9 @@ def SWCompare2(f1, f2, cutoff):
         f1_tmp.append(tmpf_path)
         SeqIO.write([seq1], tmpf_path, 'fasta')
         water_cline = WaterCommandline(asequence = tmpf_path, bsequence = f2
-                                       , gapopen = 5, gapextend = 2
+                                       , gapopen = 1, gapextend = 1
                                        , outfile = "stdout")
-        water_run = subprocess.Popen(shlex.split(water_cline.__str__())
+        water_run = subprocess.Popen(shlex.split(water_cline.__str__() + r" -datafile ../EMBOSS-6.4.0/emboss/data/EDNAFULL")
                                      , stdout = subprocess.PIPE)
         f2_i = 0
         al_len = 0
