@@ -14,15 +14,24 @@
 #
 #  You should have received a copy of the GNU General Public License
 
-from Bio import SeqIO
 import sys
+import string
 
 import blast_comp_read
 
 def AnalFPKM(json_file):
+    '''
+    return a list of lists of fpkm in a single component
+    '''
     trans_comp = blast_comp_read.GetTransComp(json_file)
+    trans_comp_fpkm = []
     for comp in trans_comp:
-        print 1
+        comp_fpkm = []
+        for  i in range(len(comp['trans'])):
+            fpkm = float(string.split(string.split(string.split(comp['trans']['%d' % i]['seq'], "\n")[0], " ")[2], "="))
+            comp_fpkm.append(fpkm)
+        trans_comp_fpkm.append(comp_fpkm)
+    return trans_comp_fpkm
 
 if __name__ == '__main__':
     AnalFPKM(sys.argv[1])
