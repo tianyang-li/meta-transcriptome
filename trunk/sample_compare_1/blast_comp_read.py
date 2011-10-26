@@ -24,6 +24,10 @@ from Bio import SeqIO
 import json
 
 def GetTransComp(json_file):
+    json_dt = open(json_file, 'r')
+    for line in json_dt:
+        line = string.strip(line)
+        print line
 
 if __name__ == '__main__':
     print "Cannot be used alone!"
