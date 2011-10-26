@@ -29,7 +29,7 @@ def AnalFPKM(json_file):
     for comp in trans_comp:
         comp_fpkm = []
         for  i in range(len(comp['trans'])):
-            fpkm = float(string.split(string.split(string.split(comp['trans']['%d' % i]['seq'], "\n")[0], " ")[2], "="))
+            fpkm = float(string.split(string.split(string.split(comp['trans']['%d' % i]['seq'], "\n")[0], " ")[2], "=")[1])
             comp_fpkm.append(fpkm)
         trans_comp_fpkm.append(comp_fpkm)
         '''
