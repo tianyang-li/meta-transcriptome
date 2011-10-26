@@ -24,10 +24,16 @@ from Bio import SeqIO
 import json
 
 def GetTransComp(json_file):
+    '''
+    Return a list of components in dictionary
+    '''
+    trans_comp = []
     json_dt = open(json_file, 'r')
     for line in json_dt:
         line = string.strip(line)
-        print line
+        comp = json.loads(line)
+        trans_comp.append(comp)
+    return trans_comp
 
 if __name__ == '__main__':
     print "Cannot be used alone!"
