@@ -16,6 +16,7 @@
 
 import sys
 import string
+import numpy
 
 import blast_comp_read
 
@@ -31,6 +32,12 @@ def AnalFPKM(json_file):
             fpkm = float(string.split(string.split(string.split(comp['trans']['%d' % i]['seq'], "\n")[0], " ")[2], "="))
             comp_fpkm.append(fpkm)
         trans_comp_fpkm.append(comp_fpkm)
+        '''
+        mean std_dev std_dev/mean
+        '''
+        print "%f %f %f" % (numpy.average(comp_fpkm)
+                            , numpy.std(comp_fpkm)
+                            , numpy.std(comp_fpkm) / numpy.average(comp_fpkm))
     return trans_comp_fpkm
 
 if __name__ == '__main__':
