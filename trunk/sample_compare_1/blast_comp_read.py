@@ -16,6 +16,7 @@
 
 '''
 read results from blast_relate.py
+should be used alone
 '''
 
 import sys
