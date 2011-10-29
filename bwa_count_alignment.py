@@ -22,7 +22,12 @@ import HTSeq
 import sys
 
 def CountBWASAMAlign(sam_files):
+    al_count = 0
     for sam_file in sam_files:
+        for align in HTSeq.SAM_Reader(sam_file):
+            if align.aligned == True:
+                al_count = al_count + 1
+    print al_count
 
 if __name__ == '__main__':
     CountBWASAMAlign(sys.argv[1:])
