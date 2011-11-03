@@ -1,7 +1,0 @@
-digraph comp0{
-0 [label="TAAAGGGGAT...ACATTTTTGA:21(0)[115]"]
-0->396[label=17]
-361 [label="TCATGGCTGAGAAAACATTTTTGG:2(361)[24]"]
-361->396[label=2]
-396 [label="TGGTTTGATG...TATGCTTGTG:20(396)[245]"]
-}

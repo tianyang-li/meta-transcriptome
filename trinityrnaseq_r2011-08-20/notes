@@ -1,9 +1,0 @@
-
-svn co https://trinityrnaseq.svn.sourceforge.net/svnroot/trinityrnaseq/trunk trinityrnaseq
-
-
-autoreconf --install
-
-
-# for meryl package
-svn co https://kmer.svn.sourceforge.net/svnroot/kmer/trunk kmer
