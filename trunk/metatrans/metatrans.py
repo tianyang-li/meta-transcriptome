@@ -17,6 +17,10 @@
 #
 #  You should have received a copy of the GNU General Public License
 
+"""
+Analysis metatranscriptome sequences using de Bruijn graph
+"""
+
 import argparse
 import sys
 
