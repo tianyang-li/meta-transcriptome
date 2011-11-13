@@ -70,7 +70,7 @@ def BlastClassify(fasta_files):
             comp_seq['%d' % seq_n] = {'seq': ac[trans][0].format('fasta'), 'accession': ac[trans][1]}
             seq_n = seq_n + 1
         comp['trans'] = comp_seq
-        print json.dumps(comp, ensure_ascii = True)
+        print json.dumps(comp, ensure_ascii=True)
         comp_n = comp_n + 1
     print >> sys.stderr, comp_n
         
