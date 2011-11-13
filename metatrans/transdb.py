@@ -16,15 +16,9 @@
 #  GNU General Public License for more details.
 
 from Bio import SeqIO
-import networkx
 
-def BuildTransDB(reads, k):
-    """
-    Build the de Bruijn graph of transcriptome reads and return the de Bruijn graph
-    
-    Keyword arguments:
-    reads -- FASTQ transcriptome reads
-    k -- kmer length
-    """
-    trans_db = networkx.Graph()
-
+class DBNode:
+    def __init__(self, len, str):
+        self.kmer_len = len
+        self.kmer_str = str
+        
