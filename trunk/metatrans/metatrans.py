@@ -21,13 +21,42 @@
 Analysis metatranscriptome sequences using de Bruijn graph
 """
 
-import argparse
+import getopt
 import sys
 
-def main(agrv):
-    parser = argparse.ArgumentParser(description 
-        = "Analysis metatranscriptome sequences using de Bruijn graph")
+def Usage(prog):
+    print >> sys.stderr, "\nUsage:"
+    print >> sys.stderr, "%s [-k kmer-length] [-s single-read-FASTQ1] [-s single-read-FASTQ2] ..." % prog
+    print >> sys.stderr, "\nOptions:\n"
+    print >> sys.stderr, "    -h    Print this short help message"
+    print >> sys.stderr, "    -k    Kmer length"
+    print >> sys.stderr, "    -s    A FASTQ files containing single reads"
+    print >> sys.stderr, ""
+    
+def Main(argv):
+    single = []  # single read FASTQ
+    
+    # TODO: handle paired end read
+    opts, args = getopt.getopt(argv[1:], "hk:s:")
+    required_opts = 0
+    for o, a in opts:
+        if o == "-h":
+            Usage(argv[0])
+            sys.exit(1)
+        elif o == "-k":
+            k = int(a)
+            required_opts += 1         
+        elif o == "-s":
+            single.append(a)
+            required_opts += 1
+        else:
+            print >> sys.stderr, "Unrecognized option: %s" % o
+            print >> sys.stderr, "See\n%s -h\nfor more information" % argv[0]
+            sys.exit(1)
+    if required_opts < 2:
+        print >> sys.stderr, "Too few options and arguments"
+        print >> sys.stderr, "See\n%s -h\nfor more information" % argv[0]
 
 if __name__ == '__main__':
-    main(sys.argv)
+    Main(sys.argv)
     sys.exit(0)

@@ -55,15 +55,15 @@ def SWCompare2(f1, f2, cutoff):
     os.mkdir(d_pval)
     f1_i = 0
     for seq1 in SeqIO.parse(f1, 'fasta'):
-        (tmpf_handle, tmpf_path) = tempfile.mkstemp(prefix = 'sw-2f')  # temp file for storing sequence
+        (tmpf_handle, tmpf_path) = tempfile.mkstemp(prefix='sw-2f')  # temp file for storing sequence
         os.close(tmpf_handle)  # close these files
         f1_tmp.append(tmpf_path)
         SeqIO.write([seq1], tmpf_path, 'fasta')
-        water_cline = WaterCommandline(asequence = tmpf_path, bsequence = f2
-                                       , gapopen = 5, gapextend = 2
-                                       , outfile = "stdout")
+        water_cline = WaterCommandline(asequence=tmpf_path, bsequence=f2
+                                       , gapopen=5, gapextend=2
+                                       , outfile="stdout")
         water_run = subprocess.Popen(shlex.split(water_cline.__str__() + r" -datafile ../EMBOSS-6.4.0/emboss/data/EDNAFULL")
-                                     , stdout = subprocess.PIPE)
+                                     , stdout=subprocess.PIPE)
         f2_i = 0
         al_len = 0
         for water_out in water_run.stdout.readlines():
