@@ -25,7 +25,8 @@ Analysis metatranscriptome sequences using de Bruijn graph
 
 import getopt
 import sys
-import dbmetatrans
+
+import db_metatrans
 
 def Usage(prog):
     print >> sys.stderr, "\nUsage:"
@@ -36,9 +37,8 @@ def Usage(prog):
     print >> sys.stderr, "    -s    A FASTQ files containing single reads"
     print >> sys.stderr, ""
     
-def Main(argv):
-    single = []  # single read FASTQ
-    
+def main(argv):
+    single = []  # single read FASTQ    
     opts, args = getopt.getopt(argv[1:], "hk:s:")
     required_opts = 0
     for o, a in opts:
@@ -57,10 +57,9 @@ def Main(argv):
             sys.exit(1)
     if required_opts < 2:
         print >> sys.stderr, "Too few options and arguments"
-        print >> sys.stderr, "See\n    %s -h\nfor more information" % argv[0]
-        
-    dbmetatrans.DBMetatrans(k, single)
+        print >> sys.stderr, "See\n    %s -h\nfor more information" % argv[0]       
+    db_metatrans.db_metatrans(k, single)
 
 if __name__ == '__main__':
-    Main(sys.argv)
+    main(sys.argv)
     sys.exit(0)
