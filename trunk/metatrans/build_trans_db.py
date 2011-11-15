@@ -18,13 +18,16 @@
 from Bio import SeqIO
 import networkx
 
-def BuildTransDB(reads, k):
+def build_trans_db(reads, k):
     """
     Build the de Bruijn graph of transcriptome reads and return the de Bruijn graph
     
-    Keyword arguments:
+    Args:
     reads -- FASTQ transcriptome reads
     k -- kmer length
+    
+    Returns:
+    The de Bruijn graph formed by the reads using kmers
     """
     trans_db = networkx.Graph()
 

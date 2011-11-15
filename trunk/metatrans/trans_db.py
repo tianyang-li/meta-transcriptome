@@ -17,7 +17,12 @@
 
 from Bio import SeqIO
 
-class DBNode:
+class RawRead(object):
+    def __init__(self, fastq):
+        self.read = fastq
+        self.db_node = []
+
+class DBNode(object):
     def __init__(self, len, str):
         self.kmer_len = len
         self.kmer_str = str

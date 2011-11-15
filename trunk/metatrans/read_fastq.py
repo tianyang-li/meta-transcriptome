@@ -17,23 +17,19 @@
 #
 #  You should have received a copy of the GNU General Public License
 
-"""
-Analysis metatranscriptome sequences using de Bruijn graph
-"""
-
 from Bio import SeqIO
-import networkx
+import trans_db
 
-import readfastq
-import buildtransdb
-
-def DBMetatrans(k, single_fastq):
+def read_fastq(fastqs): 
     """
-    Use de Bruijn graph to analyze metatranscriptome sequences
+    Read reads in a list of FASTQ files into memory and return a list containing the reads 
     
-    Keyword arguments:
-    k -- kmer length 
-    single_fastq -- FASTQ files containing single reads
+    Args:
+    fastqs -- list of fastq files
     """
-    single = readfastq.ReadFASTQ(single_fastq)
-    db = buildtransdb.BuildTransDB(reads, k)
+    reads = []
+    for fastq in fastqs:
+        for read in SeqIO.parse(fastq, 'fastq'):
+            reads.append(read)
+    return reads
+
