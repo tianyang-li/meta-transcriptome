@@ -16,6 +16,7 @@
 #  GNU General Public License for more details.
 
 from Bio import SeqIO
+import networkx
 
 class Read(object):
     """
@@ -50,17 +51,20 @@ class TransDBG(object):
     Transcriptome de Bruijn graph
     
     Attributes:
-        graph: networkx.Graph
+        graph: networkx.DiGraph
         kmer_dict: maps a kmer to its node in graph
     """
     
-    def __init__(self, G): 
-        self.graph = G  
+    def __init__(self): 
+        self.graph = networkx.DiGraph()
         self.kmer_dict = {}
     
-    def add_kmer(self, read, kmer_s, k):
-        kmer = str(read.seq)[kmer_s : kmer_s + k - 1]
-        kmer_node = TransDBGNode(kmer)
-        kmer_node.reads.append([read, kmer_s])
-        self.kmer_dict[kmer] = kmer_node
-        self.graph.add_node(kmer_node)
+    def build_dbg(self, reads, k):
+        for read in reads:
+            for kmer_s in range(len(read) - k + 1):  # kmer_s: kmer start position
+                kmer = str(read.seq)[kmer_s : kmer_s + k - 1]
+                kmer_node = TransDBGNode(kmer)
+                kmer_node.reads.append([read, kmer_s])
+                self.kmer_dict[kmer] = kmer_node
+                self.graph.add_node(kmer_node)
+
