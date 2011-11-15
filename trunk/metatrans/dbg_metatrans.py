@@ -23,9 +23,10 @@ Analysis metatranscriptome sequences using de Bruijn graph
 
 from Bio import SeqIO
 import networkx
+from matplotlib import pyplot
 
 import read_fastq
-import build_trans_dbg
+import trans_dbg
 
 def dbg_metatrans(k, single_fastq):
     """
@@ -36,4 +37,7 @@ def dbg_metatrans(k, single_fastq):
         single_fastq: FASTQ files containing single reads
     """   
     single = read_fastq.read_fastq(single_fastq)
-    dbg = build_trans_dbg.build_trans_dbg(reads, k)
+    dbg = trans_dbg.TransDBG(single, k)
+    
+    networkx.draw(dbg.graph)
+    pyplot.show()

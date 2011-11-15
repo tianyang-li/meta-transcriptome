@@ -16,6 +16,7 @@
 #  GNU General Public License for more details.
 
 from Bio import SeqIO
+from Bio.Alphabet.IUPAC import IUPACUnambiguousDNA
 import networkx
 
 class Read(object):
@@ -52,19 +53,33 @@ class TransDBG(object):
     
     Attributes:
         graph: networkx.DiGraph
+                edge direction in the graph is determined as follows:                       
+                    ACTGACTGACTG      kmer_node_1
+                       ------->
+                     CTGACTGACTGA     kmer_node_2
         kmer_dict: maps a kmer to its node in graph
     """
     
-    def __init__(self): 
+    def __init__(self, reads, k): 
         self.graph = networkx.DiGraph()
         self.kmer_dict = {}
+        self._build_dbg(reads, k)
     
-    def build_dbg(self, reads, k):
+    def _build_dbg(self, reads, k):
+        self._build_dbg_nodes(reads, k)
+        self._build_dbg_edges()
+    
+    def _build_dbg_nodes(self, reads, k):
         for read in reads:
-            for kmer_s in range(len(read) - k + 1):  # kmer_s: kmer start position
-                kmer = str(read.seq)[kmer_s : kmer_s + k - 1]
+            for kmer_s in range(len(read.fastq) - k + 1):  # kmer_s: kmer start position
+                kmer = str(read.fastq.seq)[kmer_s : kmer_s + k - 1]
                 kmer_node = TransDBGNode(kmer)
                 kmer_node.reads.append([read, kmer_s])
                 self.kmer_dict[kmer] = kmer_node
                 self.graph.add_node(kmer_node)
-
+                
+    def _build_dbg_edges(self):
+        for kmer in self.kmer_dict:
+            for nuc in IUPACUnambiguousDNA.letters:
+                if (kmer[1:] + nuc) in self.kmer_dict:
+                    self.graph.add_edge(self.kmer_dict[kmer], self.kmer_dict[kmer[1:] + nuc])

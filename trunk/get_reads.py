@@ -14,27 +14,26 @@
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
 
+# TODO: add paired end read analysis
+
+"""
+get_reads.py [# of reads] [input file] [file type] [output]
+"""
+
+import sys
 from Bio import SeqIO
-import networkx
 
-import trans_dbg
-
-def build_trans_dbg(reads, k):
-    """
-    Build the de Bruijn graph of transcriptome reads and return the de Bruijn graph
+def main(argv):
+    reads = []
+    for read, i in zip(SeqIO.parse(argv[2], argv[3]), range(int(argv[1]))):
+        reads.append(read)
+    SeqIO.write(reads, argv[4], argv[3])
     
-    Args:
-        reads: FASTQ transcriptome reads
-        k: kmer length
+if __name__ == '__main__':
+    main(sys.argv)
+    sys.exit(0)
     
-    Returns:
-        The de Bruijn graph formed by the reads using kmers
-    """    
-    dbg = trans_dbg.TransDBG(networkx.Graph())
     
-    for read in reads:  
-        for kmer_s in range(len(read) - k + 1):  # kmer_s: kmer start position
-            dbg.add_kmer(read, kmer_s, k)
-        
-    return trans_dbg
