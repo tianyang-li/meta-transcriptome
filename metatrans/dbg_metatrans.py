@@ -32,8 +32,8 @@ def dbg_metatrans(k, single_fastq):
     Use de Bruijn graph to analyze metatranscriptome sequences
     
     Args:
-    k -- kmer length 
-    single_fastq -- FASTQ files containing single reads
-    """
+        k: kmer length 
+        single_fastq: FASTQ files containing single reads
+    """   
     single = read_fastq.read_fastq(single_fastq)
     dbg = build_trans_dbg.build_trans_dbg(reads, k)

@@ -19,21 +19,48 @@ from Bio import SeqIO
 
 class Read(object):
     """
-    Contains the FASTQ read and 
+    FASTQ read
     
     Attributes:
+        fastq: a FASTQ read
     """
     
     def __init__(self, fastq):
-        self.read = fastq
-        self.db_node = []
+        self.fastq = fastq
 
 class TransDBGNode(object):
-    def __init__(self, len, str):
-        self.kmer_len = len
-        self.kmer_str = str
-
+    """
+    Node in the transcriptome de Bruijn graph that contains a kmer
+    
+    Attributes: 
+        kmer:
+        reads: a list of trans_dbg.Read that kmer came from, 
+                each entry in reads is a list of the following format:
+                    [read, kmer_s]
+                read is the read where the kmer came from, 
+                kmer_s is the kmer's start position
+    """
+    
+    def __init__(self, kmer):
+        self.kmer = kmer
+        self.reads = []
+        
 class TransDBG(object):
+    """
+    Transcriptome de Bruijn graph
+    
+    Attributes:
+        graph: networkx.Graph
+        kmer_dict: maps a kmer to its node in graph
+    """
+    
     def __init__(self, G): 
         self.graph = G  
         self.kmer_dict = {}
+    
+    def add_kmer(self, read, kmer_s, k):
+        kmer = str(read.seq)[kmer_s : kmer_s + k - 1]
+        kmer_node = TransDBGNode(kmer)
+        kmer_node.reads.append([read, kmer_s])
+        self.kmer_dict[kmer] = kmer_node
+        self.graph.add_node(kmer_node)

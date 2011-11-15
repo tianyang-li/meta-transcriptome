@@ -25,11 +25,16 @@ def build_trans_dbg(reads, k):
     Build the de Bruijn graph of transcriptome reads and return the de Bruijn graph
     
     Args:
-    reads -- FASTQ transcriptome reads
-    k -- kmer length
+        reads: FASTQ transcriptome reads
+        k: kmer length
     
     Returns:
-    The de Bruijn graph formed by the reads using kmers
-    """
+        The de Bruijn graph formed by the reads using kmers
+    """    
     dbg = trans_dbg.TransDBG(networkx.Graph())
+    
+    for read in reads:  
+        for kmer_s in range(len(read) - k + 1):  # kmer_s: kmer start position
+            dbg.add_kmer(read, kmer_s, k)
+        
     return trans_dbg
