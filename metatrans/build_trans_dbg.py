@@ -18,7 +18,9 @@
 from Bio import SeqIO
 import networkx
 
-def build_trans_db(reads, k):
+import trans_dbg
+
+def build_trans_dbg(reads, k):
     """
     Build the de Bruijn graph of transcriptome reads and return the de Bruijn graph
     
@@ -29,5 +31,5 @@ def build_trans_db(reads, k):
     Returns:
     The de Bruijn graph formed by the reads using kmers
     """
-    trans_db = networkx.Graph()
-
+    dbg = trans_dbg.TransDBG(networkx.Graph())
+    return trans_dbg

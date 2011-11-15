@@ -18,7 +18,7 @@
 #  You should have received a copy of the GNU General Public License
 
 from Bio import SeqIO
-import trans_db
+import trans_dbg
 
 def read_fastq(fastqs): 
     """
@@ -30,6 +30,6 @@ def read_fastq(fastqs):
     reads = []
     for fastq in fastqs:
         for read in SeqIO.parse(fastq, 'fastq'):
-            reads.append(read)
+            reads.append(trans_dbg.Read(read))
     return reads
 

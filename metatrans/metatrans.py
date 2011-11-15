@@ -23,10 +23,14 @@
 Analysis metatranscriptome sequences using de Bruijn graph
 """
 
+__authors__ = [
+  '"Tianyang Li" <tmy1018@gmail.com>',
+]
+
 import getopt
 import sys
 
-import db_metatrans
+import dbg_metatrans
 
 def Usage(prog):
     print >> sys.stderr, "\nUsage:"
@@ -58,7 +62,7 @@ def main(argv):
     if required_opts < 2:
         print >> sys.stderr, "Too few options and arguments"
         print >> sys.stderr, "See\n    %s -h\nfor more information" % argv[0]       
-    db_metatrans.db_metatrans(k, single)
+    dbg_metatrans.dbg_metatrans(k, single)
 
 if __name__ == '__main__':
     main(sys.argv)

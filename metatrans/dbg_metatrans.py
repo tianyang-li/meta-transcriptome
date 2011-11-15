@@ -14,16 +14,26 @@
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+
+"""
+Analysis metatranscriptome sequences using de Bruijn graph
+"""
 
 from Bio import SeqIO
+import networkx
 
-class RawRead(object):
-    def __init__(self, fastq):
-        self.read = fastq
-        self.db_node = []
+import read_fastq
+import build_trans_dbg
 
-class DBNode(object):
-    def __init__(self, len, str):
-        self.kmer_len = len
-        self.kmer_str = str
-        
+def dbg_metatrans(k, single_fastq):
+    """
+    Use de Bruijn graph to analyze metatranscriptome sequences
+    
+    Args:
+    k -- kmer length 
+    single_fastq -- FASTQ files containing single reads
+    """
+    single = read_fastq.read_fastq(single_fastq)
+    dbg = build_trans_dbg.build_trans_dbg(reads, k)
