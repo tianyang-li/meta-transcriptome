@@ -24,7 +24,7 @@ Analysis metatranscriptome sequences using de Bruijn graph
 """
 
 __authors__ = [
-  '"Tianyang Li" <tmy1018@gmail.com>',
+               '"Tianyang Li" <tmy1018@gmail.com>',
 ]
 
 import getopt

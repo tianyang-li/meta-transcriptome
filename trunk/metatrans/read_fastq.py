@@ -22,11 +22,15 @@ import trans_dbg
 
 def read_fastq(fastqs): 
     """
-    Read reads in a list of FASTQ files into memory and return a list containing the reads 
+    Read reads in a list of FASTQ files into memory 
+        and return a list containing the reads 
     
     Args:
-    fastqs -- list of fastq files
-    """
+        fastqs: list of fastq files
+    
+    Returns:
+        A list containing trans_dbg.Read
+    """   
     reads = []
     for fastq in fastqs:
         for read in SeqIO.parse(fastq, 'fastq'):
