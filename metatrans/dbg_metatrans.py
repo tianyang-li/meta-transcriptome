@@ -38,6 +38,6 @@ def dbg_metatrans(k, single_fastq):
     """   
     single = read_fastq.read_fastq(single_fastq)
     dbg = trans_dbg.TransDBG(single, k)
-    
-    networkx.draw(dbg.graph)
+    networkx.draw_networkx(dbg.graph, with_labels=False, pos=networkx.spectral_layout(networkx.Graph(dbg.graph)))
     pyplot.show()
+
