@@ -20,20 +20,21 @@
 from Bio import SeqIO
 import trans_dbg
 
-def read_fastq(fastqs): 
+def read_reads(in_reads, reads_type): 
     """
-    Read reads in a list of FASTQ files into memory 
+    Read reads in a list of FASTQ or FASTA files into memory 
         and return a list containing the reads 
     
     Args:
-        fastqs: list of fastq files
+        reads: list of FASTQ or FASTA files
+        reads_type: FASTA or FASTQ
     
     Returns:
         A list containing trans_dbg.Read
     """   
     reads = []
-    for fastq in fastqs:
-        for read in SeqIO.parse(fastq, 'fastq'):
+    for reads_file in in_reads:
+        for read in SeqIO.parse(reads_file, reads_type):
             reads.append(trans_dbg.Read(read))
     return reads
 
