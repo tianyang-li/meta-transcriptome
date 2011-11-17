@@ -21,14 +21,14 @@ import networkx
 
 class Read(object):
     """
-    FASTQ read
+    FASTQ or FASTA read
     
     Attributes:
-        fastq: a FASTQ read
+        fastq: a FASTQ or FASTA read (SeqRecord)
     """
     
-    def __init__(self, fastq):
-        self.fastq = fastq
+    def __init__(self, read):
+        self.read = read
 
 class TransDBGNode(object):
     """
@@ -71,8 +71,8 @@ class TransDBG(object):
     
     def _build_dbg_nodes(self, reads, k):
         for read in reads:
-            for kmer_s in range(len(read.fastq) - k + 1):  # kmer_s: kmer start position
-                kmer = str(read.fastq.seq)[kmer_s : kmer_s + k - 1]
+            for kmer_s in range(len(read.read) - k + 1):  # kmer_s: kmer start position
+                kmer = str(read.read.seq)[kmer_s : kmer_s + k - 1]
                 kmer_node = TransDBGNode(kmer)
                 kmer_node.reads.append([read, kmer_s])
                 self.kmer_dict[kmer] = kmer_node
