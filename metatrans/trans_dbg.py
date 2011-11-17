@@ -35,7 +35,6 @@ class TransDBGNode(object):
     Node in the transcriptome de Bruijn graph that contains a kmer
     
     Attributes: 
-        kmer:
         reads: a list of trans_dbg.Read that kmer came from, 
                 each entry in reads is a list of the following format:
                     [read, kmer_s]
@@ -43,8 +42,7 @@ class TransDBGNode(object):
                 kmer_s is the kmer's start position
     """
     
-    def __init__(self, kmer):
-        self.kmer = kmer
+    def __init__(self):
         self.reads = []
         
 class TransDBG(object):
@@ -73,13 +71,15 @@ class TransDBG(object):
         for read in reads:
             for kmer_s in range(len(read.read) - k + 1):  # kmer_s: kmer start position
                 kmer = str(read.read.seq)[kmer_s : kmer_s + k - 1]
-                kmer_node = TransDBGNode(kmer)
-                kmer_node.reads.append([read, kmer_s])
-                self.kmer_dict[kmer] = kmer_node
-                self.graph.add_node(kmer_node)
+                if kmer not in self.kmer_dict:
+                    kmer_node = TransDBGNode()
+                    kmer_node.reads.append([read, kmer_s])
+                    self.kmer_dict[kmer] = kmer_node
+                    self.graph.add_node(kmer_node, kmer=kmer)
                 
     def _build_dbg_edges(self):
         for kmer in self.kmer_dict:
             for nuc in IUPACUnambiguousDNA.letters:
-                if (kmer[1:] + nuc) in self.kmer_dict:
-                    self.graph.add_edge(self.kmer_dict[kmer], self.kmer_dict[kmer[1:] + nuc])
+                kmer_next = kmer[1:] + nuc
+                if kmer_next in self.kmer_dict:
+                    self.graph.add_edge(self.kmer_dict[kmer], self.kmer_dict[kmer_next])

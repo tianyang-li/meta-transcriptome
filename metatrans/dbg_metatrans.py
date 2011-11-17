@@ -39,3 +39,5 @@ def dbg_metatrans(k, single_reads):
     single = read_reads.read_reads(single_reads, 'fastq')
     dbg = trans_dbg.TransDBG(single, k)
 
+    networkx.write_dot(dbg.graph, "test.dot")
+
