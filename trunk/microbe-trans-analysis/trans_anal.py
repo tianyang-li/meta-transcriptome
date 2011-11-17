@@ -14,27 +14,23 @@
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
 
-"""
-Analysis metatranscriptome sequences using de Bruijn graph
-"""
-
-from Bio import SeqIO
+import sys
 import networkx
-from matplotlib import pyplot
 
 import read_reads
 import trans_dbg
 
-def dbg_metatrans(k, single_reads):
-    """
-    Use de Bruijn graph to analyze metatranscriptome sequences
+def main(argv):
+    seqs = read_reads.read_reads(argv[2:], 'fasta')
+    trans = trans_dbg.TransDBG(seqs, int(argv[1]))
     
-    Args:
-        k: kmer length 
-        single_reads: FASTQ or FASTA files containing single reads
-    """   
-    single = read_reads.read_reads(single_reads, 'fastq')
-    dbg = trans_dbg.TransDBG(single, k)
+    # number of transcripts
+    print len(seqs),
+    trans_comp = networkx.weakly_connected_component_subgraphs(trans.graph)
+    # number of connected components in the de Bruijn graph
+    print len(trans_comp)
+    
+if __name__ == '__main__':
+    main(sys.argv)
+    sys.exit(0)

@@ -17,24 +17,24 @@
 #
 #  You should have received a copy of the GNU General Public License
 
-"""
-Analysis metatranscriptome sequences using de Bruijn graph
-"""
-
 from Bio import SeqIO
-import networkx
-from matplotlib import pyplot
-
-import read_reads
 import trans_dbg
 
-def dbg_metatrans(k, single_reads):
+def read_reads(in_reads, reads_type): 
     """
-    Use de Bruijn graph to analyze metatranscriptome sequences
+    Read reads in a list of FASTQ or FASTA files into memory 
+        and return a list containing the reads 
     
     Args:
-        k: kmer length 
-        single_reads: FASTQ or FASTA files containing single reads
+        reads: list of FASTQ or FASTA files
+        reads_type: FASTA or FASTQ
+    
+    Returns:
+        A list containing trans_dbg.Read
     """   
-    single = read_reads.read_reads(single_reads, 'fastq')
-    dbg = trans_dbg.TransDBG(single, k)
+    reads = []
+    for reads_file in in_reads:
+        for read in SeqIO.parse(reads_file, reads_type):
+            reads.append(trans_dbg.Read(read))
+    return reads
+
