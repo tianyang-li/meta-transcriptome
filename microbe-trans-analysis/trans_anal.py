@@ -29,6 +29,7 @@ def trans_anal(trans, seqs):
     print len(trans_comps)
     
     trans_comp_stat = open("trans_comp_stat", 'w')
+    
     for trans_comp in trans_comps:
         
         # repeat analysis: 
@@ -44,15 +45,17 @@ def trans_anal(trans, seqs):
         source_count = 0
         sink_count = 0
         
-        for v in range(trans_comp.number_of_nodes()):
-            if (trans_comp.in_degree_iter(v)[1] == 0):
+        for v in trans_comp.nodes():        
+            if (list(trans_comp.in_degree_iter([v]))[0][1] == 0):
                 source_count += 1
-            if (trans_comp.out_degree_iter(v)[1] == 0):
+            if (list(trans_comp.out_degree_iter([v]))[0][1] == 0):
                 sink_count += 1
         
         # graph size, # of sccs, # of sources, # of sinks
         comp_stat = "%d, %d, %d, %d\n" % (trans_comp.number_of_nodes(), repeat_count, source_count, sink_count)
+        trans_comp_stat.write(comp_stat)
         
+    trans_comp_stat.close()
 
 def main(argv):
     seqs = read_reads.read_reads(argv[2:], 'fasta')
