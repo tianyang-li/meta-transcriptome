@@ -23,10 +23,36 @@ import trans_dbg
 
 def trans_anal(trans, seqs):
     # number of transcripts
-    print len(seqs),
-    trans_comp = networkx.weakly_connected_component_subgraphs(trans.graph)
+    print len(seqs)
+    trans_comps = networkx.weakly_connected_component_subgraphs(trans.graph)
     # number of connected components in the de Bruijn graph
-    print len(trans_comp)
+    print len(trans_comps)
+    
+    trans_comp_stat = open("trans_comp_stat", 'w')
+    for trans_comp in trans_comps:
+        
+        # repeat analysis: 
+        #     count the number of strongly connected 
+        #     components (which shouldn't occur if no repeats)
+        sccs = networkx.strongly_connected_components(trans_comp)
+        repeat_count = 0  # not so rigorous???
+        for scc in sccs:
+            if len(scc) <= 1:
+                break
+            repeat_count += 1
+        
+        source_count = 0
+        sink_count = 0
+        
+        for v in range(trans_comp.number_of_nodes()):
+            if (trans_comp.in_degree_iter(v)[1] == 0):
+                source_count += 1
+            if (trans_comp.out_degree_iter(v)[1] == 0):
+                sink_count += 1
+        
+        # graph size, # of sccs, # of sources, # of sinks
+        comp_stat = "%d, %d, %d, %d\n" % (trans_comp.number_of_nodes(), repeat_count, source_count, sink_count)
+        
 
 def main(argv):
     seqs = read_reads.read_reads(argv[2:], 'fasta')
