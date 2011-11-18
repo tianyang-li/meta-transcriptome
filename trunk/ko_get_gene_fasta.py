@@ -33,15 +33,19 @@ def main(argv):
     
     count = 0
     
+    gene_list = []
+    
     for ko_num in ko_list:
         ko_num = ko_num.strip()
         ko_res = serv.get_genes_by_ko("ko:%s" % ko_num, "all")
         for gene_entry in ko_res:
-            fasta_str = serv.bget("-f -n n %s" % gene_entry['entry_id'])
-            ko_genes.write(fasta_str)
-            
-            count += 1
-            print "Got gene #%d" % count 
+            if gene_entry['entry_id'] not in gene_list:
+                gene_list.append(gene_entry['entry_id'])
+                fasta_str = serv.bget("-f -n n %s" % gene_entry['entry_id'])
+                ko_genes.write(fasta_str)
+                
+                count += 1
+                print "Got gene #%d" % count 
     
     ko_list.close()
     ko_genes.close()
