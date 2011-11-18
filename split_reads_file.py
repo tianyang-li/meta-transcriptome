@@ -33,7 +33,7 @@ def main(argv):
             k += 1
         else:
             k = 0
-            SeqIO.write(each_reads, argv[4] + ("%d.%s" % (split_count, argv[1])), argv[1])
+            SeqIO.write(each_reads, argv[4] + (".%d.%s" % (split_count, argv[1])), argv[1])
             split_count += 1
             each_reads = []
     
