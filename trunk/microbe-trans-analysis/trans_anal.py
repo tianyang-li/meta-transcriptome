@@ -21,15 +21,17 @@ import networkx
 import read_reads
 import trans_dbg
 
-def main(argv):
-    seqs = read_reads.read_reads(argv[2:], 'fasta')
-    trans = trans_dbg.TransDBG(seqs, int(argv[1]))
-    
+def trans_anal(trans, seqs):
     # number of transcripts
     print len(seqs),
     trans_comp = networkx.weakly_connected_component_subgraphs(trans.graph)
     # number of connected components in the de Bruijn graph
     print len(trans_comp)
+
+def main(argv):
+    seqs = read_reads.read_reads(argv[2:], 'fasta')
+    trans = trans_dbg.TransDBG(seqs, int(argv[1]))
+    trans_anal(trans, seqs)
     
 if __name__ == '__main__':
     main(sys.argv)

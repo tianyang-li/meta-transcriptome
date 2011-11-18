@@ -18,22 +18,37 @@
 #  You should have received a copy of the GNU General Public License
 
 """
-get_reads.py [# of reads] [input file] [file type] [output]
-
-get the first argv[1] lines of reads from an input file
+ko_get_genes_fasta.py [file containing KO numbers] [output FASTA file]
 """
 
+import SOAPpy
 import sys
-from Bio import SeqIO
 
 def main(argv):
-    reads = []
-    for read, i in zip(SeqIO.parse(argv[2], argv[3]), range(int(argv[1]))):
-        reads.append(read)
-    SeqIO.write(reads, argv[4], argv[3])
+    wsdl = "http://soap.genome.jp/KEGG.wsdl"
+    serv = SOAPpy.WSDL.Proxy(wsdl)
+    
+    ko_list = open(argv[1], 'r')
+    ko_genes = open(argv[2], 'w')
+    
+    count = 0
+    
+    for ko_num in ko_list:
+        ko_num = ko_num.strip()
+        ko_res = serv.get_genes_by_ko("ko:%s" % ko_num, "all")
+        for gene_entry in ko_res:
+            fasta_str = serv.bget("-f -n n %s" % gene_entry['entry_id'])
+            ko_genes.write(fasta_str)
+            
+            count += 1
+            print "Got gene #%d" % count 
+    
+    ko_list.close()
+    ko_genes.close()
     
 if __name__ == '__main__':
     main(sys.argv)
     sys.exit(0)
-    
-    
+
+
+
