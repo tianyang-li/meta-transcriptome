@@ -46,11 +46,23 @@ def main(argv):
     
     for ko_num in ko_list:
         ko_num = ko_num.strip()
-        ko_res = serv.service.get_genes_by_ko("ko:%s" % ko_num, "all")
+        while True:
+            try:
+                print "Getting KO gene list: %s" % ko_num
+                ko_res = serv.service.get_genes_by_ko("ko:%s" % ko_num, "all")
+                break
+            except BaseException as err:
+                print >> sys.stderr, str(err)
         for gene_entry in ko_res:
             if str(gene_entry['entry_id']) not in gene_list:
                 gene_list.append(str(gene_entry['entry_id']))
-                fasta_str = serv.service.bget("-f -n n %s" % str(gene_entry['entry_id']))
+                while True:
+                    try:
+                        print "Getting gene: %s" % str(gene_entry['entry_id'])
+                        fasta_str = serv.service.bget("-f -n n %s" % str(gene_entry['entry_id']))
+                        break
+                    except BaseException as err:
+                        print >> sys.stderr, str(err)
                 ko_genes.write(str(fasta_str))
                 
                 count += 1
