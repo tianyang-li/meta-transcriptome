@@ -49,11 +49,27 @@ def SingleSeqKmer(read_str, k):
         
     return kmer_count
 
+def GetKmers(read_str, k):
+    """
+    Get a list of kmers in read_str
+    
+    Arguments:
+        read_str: a string of ACGT sequences
+        
+    Returns:
+        a list containing all the kmers in read_str
+    """
+    kmers = []
+    for kmer_s in range(len(read_str) - k + 1):
+        kmer = read_str[kmer_s : kmer_s + k - 1]
+        kmers.append(kmer)
+    return kmers
+
 def main(argv):
     k = int(argv[2])
     
-    # a list of [read, kmer_count (dict: (kmer, count))
-    #     , kmer_self_repeat (int), read_overlap_kmer (list: (read, overlap_kmer))]  
+    # a list of [read, 
+    #     , kmer_self_repeat (int), read_overlap_kmer (int)]  
     reads = []  
     
     for rf in argv[3:]:
@@ -62,7 +78,6 @@ def main(argv):
     
     for read_entry in reads:
         kmer_count = SingleSeqKmer(str(read_entry[0].seq), k)
-        read_entry.append(kmer_count)
         
         kmer_self_repeat = 0
         for kmer, occur in kmer_count.iteritems():
@@ -70,20 +85,19 @@ def main(argv):
                 kmer_self_repeat += 1
         read_entry.append(kmer_self_repeat)
         
-        read_overlap_kmer = []
+        read_overlap_kmer = 0
         read_entry.append(read_overlap_kmer)
     
     for ent1 in range(len(reads)):
         for ent2 in range(ent1 + 1, len(reads)):
-            set1 = set(reads[ent1][1].keys())
-            set2 = set(reads[ent2][1].keys())
-            overlap_kmer = list(set1.intersection(set2))
-            if len(overlap_kmer) != 0:
-                reads[ent1][3].append((ent2, overlap_kmer))
-                reads[ent2][3].append((ent1, overlap_kmer))
+            set1 = set(GetKmers(str(reads[ent1][0].seq), k))
+            set2 = set(GetKmers(str(reads[ent2][0].seq), k))
+            if len(set1.intersection(set2)) != 0:
+                reads[ent1][2] += 1
+                reads[ent2][2] += 1  
     
     for read_entry in reads:
-        print read_entry[2], len(read_entry[3])
+        print read_entry[1], read_entry[2]
             
         
 if __name__ == '__main__':
