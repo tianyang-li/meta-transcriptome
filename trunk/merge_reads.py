@@ -28,7 +28,7 @@ from Bio import SeqIO
 def main(argv):
     reads = []
     for fin in argv[3:]:
-        for read in SeqIO.parse(fin, argv[2]):
+        for read in SeqIO.parse(fin, argv[1]):
             reads.append(read)
     SeqIO.write(reads, argv[2], argv[1])
 
