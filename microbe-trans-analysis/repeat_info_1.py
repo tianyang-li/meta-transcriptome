@@ -48,8 +48,9 @@ def main(argv):
             clusters[int(fields[1])].append(fields[8])
     
     uc.close()
-    
-    print clusters
+
+    for cl in clusters:
+        print cl
     
 if __name__ == '__main__':
     main(sys.argv)
