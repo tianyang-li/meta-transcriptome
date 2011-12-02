@@ -72,10 +72,9 @@ def main(argv):
                                     read_good = False
                     if read_good:
                         reduc_cl.append(read)
-           
-            print ""
-
-            tmp_clusters.append(reduc_cl)
+            
+            if len(reduc_cl) > 1:
+                tmp_clusters.append(reduc_cl)
             
     clusters = tmp_clusters
     
