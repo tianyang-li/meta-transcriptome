@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/data1/tyli/bin/python2.6
 
 #  Copyright (C) 2011 Tianyang Li
 #
@@ -27,15 +27,8 @@ import os
 
 def main(argv):
     wsdl = "http://soap.genome.jp/KEGG.wsdl"
-    serv = client.Client(wsdl)
-    
-    proxyOpts = dict()
-    if os.environ.has_key('http_proxy'):
-        proxyOpts['http'] = os.environ['http_proxy'].replace('http://', '')
-    elif os.environ.has_key('HTTP_PROXY'):
-        proxyOpts['http'] = os.environ['HTTP_PROXY'].replace('http://', '')
-    if 'http' in proxyOpts:
-        serv.set_options(proxy=proxyOpts)
+    proxyOpts = dict(http="bio_user:12345678@166.111.74.4:3128", https="bio_user:12345678@166.111.74.4:3128") 
+    serv = client.Client(wsdl, proxy=proxyOpts)
 
     ko_list = open(argv[1], 'r')
     ko_genes = open(argv[2], 'w')
@@ -58,7 +51,7 @@ def main(argv):
                 gene_list.append(str(gene_entry['entry_id']))
                 while True:
                     try:
-                        print "Getting gene: %s" % str(gene_entry['entry_id'])
+                        print "Getting gene: %s in %s" % (str(gene_entry['entry_id']), ko_num)
                         fasta_str = serv.service.bget("-f -n n %s" % str(gene_entry['entry_id']))
                         break
                     except BaseException as err:
