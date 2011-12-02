@@ -74,18 +74,8 @@ def main(argv):
                         reduc_cl.append(read)
             
             if len(reduc_cl) > 1:
-                self_repeat = {}
-                for read in reduc_cl:
-                    for iv in repeats[read][1]:
-                        if iv.chrom not in self_repeat:
-                            self_repeat[iv.chrom] = 0
-                        else:
-                            self_repeat[iv.chrom] += 1
-                self_repeat_count = 0
-                for read in self_repeat.keys():
-                    if self_repeat[read] != 0:
-                        self_repeat_count += 1
-                print self_repeat_count
+                for read in reduc_cl:   
+                    print len(repeats[read][0])
                 tmp_clusters.append(reduc_cl)
             
     clusters = tmp_clusters
