@@ -54,7 +54,7 @@ def main(argv):
     for cl in clusters:
         def repeat_in_cluster(my_repeats, my_cl):
             for read in my_cl:
-                if read[0] in my_repeats:
+                if read in my_repeats:
                     return read
             return None
         
