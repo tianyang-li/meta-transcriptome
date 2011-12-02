@@ -60,18 +60,23 @@ def main(argv):
         
         clr = repeat_in_cluster(repeats, cl)
         if (len(cl) > 1) and (clr != None):
-            print cl
+            reduc_cl = []
 
             for read in cl:
                 if read in repeats:
-                    print len(repeats[read][0]),
-                    print repeats[read][1],
-                else:
-                    print "*", "#",
+                    read_good = True
+                    for rread in reduc_cl:
+                        for iv in repeats[read][1]:
+                            for riv in repeats[rread][1]:
+                                if (iv.chrom == riv.chrom) and not((iv.start >= riv.end) or (riv.start >= iv.end)):
+                                    read_good = False
+                    if read_good:
+                        reduc_cl.append(read)
            
             print ""
 
-            tmp_clusters.append(cl)
+            tmp_clusters.append(reduc_cl)
+            
     clusters = tmp_clusters
     
 if __name__ == '__main__':
