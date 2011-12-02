@@ -1,5 +1,4 @@
-#!/usr/bin/python
-
+#!/usr/bin/env python
 #  Copyright (C) 2011 Tianyang Li
 #
 #  tmy1018 (at) gmail (dot) com
@@ -28,6 +27,8 @@ from Bio import SeqIO
 
 def main(argv):
     fout = open(argv[4], 'w')
+    for f1, f2 in HTSeq.SAM_Reader(argv[3]):
+        print f1, f2
     fout.close()
     
 if __name__ == "__main__":
