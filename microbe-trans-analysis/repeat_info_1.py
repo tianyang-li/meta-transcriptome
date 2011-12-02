@@ -31,9 +31,9 @@ def main(argv):
     for align in HTSeq.SAM_Reader(argv[1]):
         if align.aligned:
             if align.read.name not in repeats:
-                repeats[align.read.name] = [align.iv]
+                repeats[align.read.name] = [align.read.seq, [align.iv]]
             else:
-                repeats[align.read.name].append(align.iv)
+                repeats[align.read.name][1].append(align.iv)
                 
     uc = open(argv[2], 'r')
     
@@ -43,14 +43,19 @@ def main(argv):
         if line[0] != "#":
             line = string.strip(line)
             fields = line.split("\t")
-            if int(fields[1]) not in clusters:
+            if int(fields[1]) >= len(clusters):
                 clusters.append([])
-            clusters[int(fields[1])].append(fields[8])
+            if fields[8] not in clusters[int(fields[1])]:
+                clusters[int(fields[1])].append(fields[8])
     
     uc.close()
 
+    tmp_clusters = []
     for cl in clusters:
-        print cl
+        if (len(cl) > 1) and (cl[0] in repeats):
+            print cl, len(repeats[cl[0]][0])
+            tmp_clusters.append(cl)
+    clusters = tmp_clusters
     
 if __name__ == '__main__':
     main(sys.argv)
