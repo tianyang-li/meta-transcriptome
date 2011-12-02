@@ -74,9 +74,7 @@ def main(argv):
                         reduc_cl.append(read)
             
             if len(reduc_cl) > 1:
-                for read in reduc_cl:
-                    print len(repeats[read][0])
-                
+                print len(reduc_cl) 
                 tmp_clusters.append(reduc_cl)
             
     clusters = tmp_clusters
