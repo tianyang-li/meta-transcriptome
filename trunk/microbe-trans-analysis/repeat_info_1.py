@@ -52,8 +52,15 @@ def main(argv):
 
     tmp_clusters = []
     for cl in clusters:
-        if (len(cl) > 1) and (cl[0] in repeats):
-            print cl, len(repeats[cl[0]][0])
+        def repeat_in_cluster(my_repeats, my_cl):
+            for read in my_cl:
+                if read[0] in my_repeats:
+                    return read
+            return None
+        
+        clr = repeat_in_cluster(repeats, cl)
+        if (len(cl) > 1) and (clr != None):
+            print cl, len(repeats[clr[0]][0])
             tmp_clusters.append(cl)
     clusters = tmp_clusters
     
