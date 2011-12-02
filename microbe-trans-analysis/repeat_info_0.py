@@ -18,7 +18,7 @@
 
 """
 Usage:
-./repeat_info_0.py [query fasta] [db fasta] [align sam] [out statistics]
+./repeat_info_0.py [align sam] 
 """
 
 import sys
@@ -26,10 +26,18 @@ import HTSeq
 from Bio import SeqIO
 
 def main(argv):
-    fout = open(argv[4], 'w')
-    for f1, f2 in HTSeq.SAM_Reader(argv[3]):
-        print f1, f2
-    fout.close()
+    rep_count = {}
+    queries = []
+    for align in HTSeq.SAM_Reader(argv[1]):
+        if align.aligned:
+            if align.read.name not in queries:
+                queries.append(align.read.name)
+            else:
+                if align.read.name not in rep_count:
+                    rep_count[align.read.name] = [1, len(align.read.seq)]
+                else:
+                    rep_count[align.read.name][0] += 1
+    print rep_count
     
 if __name__ == "__main__":
     main(sys.argv)
