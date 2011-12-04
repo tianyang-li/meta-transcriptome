@@ -18,7 +18,7 @@
 
 """
 Usage:
-./repeat_info_0.py [align sam] [usearch uc]
+./repeat_info_0.py [align sam] [usearch uc] [gene len]
 """
 
 import sys
@@ -73,9 +73,19 @@ def main(argv):
                     if read_good:
                         reduc_cl.append(read)
             
+            tmp_fin = open(argv[3] , 'r')
+            
+            gene_len = {}
+            for gl in tmp_fin:
+                gene_len[gl.split(" ")[0]] = int(gl.split(" ")[1])
+            
+            tmp_fin.close()
+            
             if len(reduc_cl) > 1:
                 for read in reduc_cl:   
-                    print len(repeats[read][0])
+                    for iv in repeats[read][1]:
+                        print float(len(repeats[read][0])) / float(gene_len[iv])
+                        
                 tmp_clusters.append(reduc_cl)
             
     clusters = tmp_clusters
