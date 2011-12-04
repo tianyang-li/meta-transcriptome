@@ -85,7 +85,7 @@ def main(argv):
             if len(reduc_cl) > 1:
                 for read in reduc_cl:   
                     for iv in repeats[read][1]:
-                        print float(len(repeats[read][0])) / float(gene_len[iv])
+                        print float(len(repeats[read][0])) / float(gene_len[iv.chrom])
                         
                 tmp_clusters.append(reduc_cl)
             
