@@ -27,7 +27,7 @@ from Bio import SeqIO
 def main(argv):
     for fin in argv[2:]:
         for read in SeqIO.parse(fin, argv[1]):
-            print read.id, len(str(read.seq))
+            print len(str(read.seq))
 
 if __name__ == '__main__':
     main(sys.argv)
