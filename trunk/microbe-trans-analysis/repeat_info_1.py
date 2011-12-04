@@ -77,6 +77,7 @@ def main(argv):
             
             gene_len = {}
             for gl in tmp_fin:
+                gl = string.strip(gl)
                 gene_len[gl.split(" ")[0]] = int(gl.split(" ")[1])
             
             tmp_fin.close()
