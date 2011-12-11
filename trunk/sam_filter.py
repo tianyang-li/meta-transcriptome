@@ -21,10 +21,40 @@
 """
 filter reads according to alignment in SAM file
 Usage:
-
+./sam_filter.py [0/1] [SAM] [fasta/fastq] [read] [output]
+0 - keep those not aligned in SAM
+1 - keep those aligned in SAM
 """
 
 import sys
 import HTSeq
 from Bio import SeqIO
+
+def main(argv):
+    keep = True
+    if argv[1] == '0':
+        keep = False
+    if argv[1] == '1':
+        keep = True
+        
+    aligned = set([])
+        
+    for align in HTSeq.SAM_Reader(argv[2]):
+        if align.aligned:
+            aligned.add(align.read.name)
+    
+    filtered = []
+    for read in SeqIO.parse(argv[4], argv[3]):
+        if keep:
+            if read.name in aligned:
+                filtered.append(read)
+        else:
+            if read.name not in aligned:
+                filtered.append(read)
+    
+    SeqIO.write(filtered, argv[5], argv[3])
+
+if __name__ == '__main__':
+    main(sys.argv)
+    sys.exit(0)
 
