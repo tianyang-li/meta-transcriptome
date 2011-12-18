@@ -19,16 +19,23 @@
 
 """
 Usage:
-./trinity_out.py [Trinity.fasta]
+./trinity_out.py [Trinity.fasta] [read SAM]
 """
 
 import sys
 import string
 from Bio import SeqIO
+import HTSeq
 
 def main(argv):
+    contigs = {}
     for frag in SeqIO.parse(argv[1], 'fasta'):
-        print len(frag.seq), frag.description
+        contigs[frag.name] = [len(frag.seq), 0]
+    for align in HTSeq.SAM_Reader(argv[2]):
+        if align.aligned:
+            contigs[align.iv.chrom][1] += len(align.read)
+    for contig in contigs.keys():
+        print float(contigs[contig][1]) / float(contigs[contig][0])
 
 if __name__ == '__main__':
     main(sys.argv)
