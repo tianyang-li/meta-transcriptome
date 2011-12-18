@@ -33,9 +33,10 @@ def main(argv):
         contigs[frag.name] = [len(frag.seq), 0]
     for align in HTSeq.SAM_Reader(argv[2]):
         if align.aligned:
-            contigs[align.iv.chrom][1] += len(align.read)
+            contigs[align.iv.chrom][1] += 1
     for contig in contigs.keys():
-        print float(contigs[contig][0]), float(contigs[contig][1]) / float(contigs[contig][0])
+        if contigs[contig][1] != 0:
+            print float(contigs[contig][0]), float(contigs[contig][1]) / float(contigs[contig][0])
 
 if __name__ == '__main__':
     main(sys.argv)
