@@ -35,7 +35,7 @@ def main(argv):
         if align.aligned:
             contigs[align.iv.chrom][1] += len(align.read)
     for contig in contigs.keys():
-        print float(contigs[contig][1]) / float(contigs[contig][0])
+        print float(contigs[contig][0]), float(contigs[contig][1]) / float(contigs[contig][0])
 
 if __name__ == '__main__':
     main(sys.argv)
