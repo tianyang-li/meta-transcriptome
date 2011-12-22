@@ -43,13 +43,14 @@ def main(argv):
         if align.aligned:
             aligned.add(align.read.name)
 
-    for read in SeqIO.parse(argv[4], argv[3]):
-        if keep:
+    if keep:
+        for read in SeqIO.parse(argv[4], argv[3]):
             if read.name in aligned:
-                print str(read)
-        else:
+                print read.format('fastq')
+    else:
+        for read in SeqIO.parse(argv[4], argv[3]):
             if read.name not in aligned:
-                print str(read)
+                print read.format('fastq')
     
 
 if __name__ == '__main__':
