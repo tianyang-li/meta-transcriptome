@@ -42,19 +42,18 @@ def main(argv):
     for align in HTSeq.SAM_Reader(argv[2]):
         if align.aligned:
             aligned.add(align.read.name)
-    
-    filtered = []
+
     for read in SeqIO.parse(argv[4], argv[3]):
         if keep:
             if read.name in aligned:
-                filtered.append(read)
+                print str(read)
         else:
             if read.name not in aligned:
-                filtered.append(read)
+                print str(read)
     
-    SeqIO.write(filtered, argv[5], argv[3])
 
 if __name__ == '__main__':
     main(sys.argv)
     sys.exit(0)
+
 
