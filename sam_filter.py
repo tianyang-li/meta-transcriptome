@@ -21,7 +21,7 @@
 """
 filter reads according to alignment in SAM file
 Usage:
-./sam_filter.py [0/1] [SAM] [fasta/fastq] [read] [output]
+./sam_filter.py [0/1] [SAM] [fasta/fastq] [read]
 0 - keep those not aligned in SAM
 1 - keep those aligned in SAM
 """
