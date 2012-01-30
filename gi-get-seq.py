@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/env python
 
 # Copyright (C) 2011 Tianyang Li
 #
@@ -14,9 +14,6 @@
 #
 # You should have received a copy of the GNU General Public License
 
-# simluate uniform random covering of a 
-# transcript by reads of equal length
-# 
-# this is a model for Illumina single end reads
+from Bio import Entrez
 
 
