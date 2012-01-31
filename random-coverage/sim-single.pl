@@ -19,4 +19,19 @@
 # 
 # this is a model for Illumina single end reads
 
+use strict;
+use warnings;
+
+use Getopt::Std;
+
+my %params = (t => "1");
+getopts('L:N:k:t:', \%params);
+# -L	length of transcript
+# -N	number of reads
+# -k 	length of read
+# -p	number of threads
+
+
+
+
 
