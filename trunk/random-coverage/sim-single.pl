@@ -28,22 +28,34 @@ use Getopt::Std;
 # -N	number of reads
 # -k 	length of read
 # -t	number of threads
+# -r	number of runs in simulations
 my %params = ( t => "1" );
-getopts( 'L:N:k:t:', \%params );
+getopts( 'L:N:k:t:r:', \%params );
+my $runs = $params{r};
+my $k    = $params{k};
+my $N    = $params{N};
+my $eL   = $params{L} - $k + 1;    # effective length
 
-# calculate probability using my formula
 {
-	use bignum;
+    use threads;
 
-	sub calc_prob {
-		my $params = shift;
-		my $k      = $params->{k};
-		my $N      = $params->{N};
-		my $L      = $params->{L} - $k + 1;    # effective length
-		my $prob = 0;
-		$prob;
-	}
+    # &sim_single(run)
+    sub sim_single {
+        my $run = $_[0];
+        foreach my $i ( 1 .. $run ) {
+        }
+    }
 
-	printf "%g\n", &calc_prob( \%params );
+    # calculate probability using my formula
+    {
+        use bignum;
+
+        sub calc_prob {
+            my $prob = 0;
+            $prob;
+        }
+
+        printf "%g\n", &calc_prob;
+    }
 }
 
