@@ -14,9 +14,9 @@
 #
 # You should have received a copy of the GNU General Public License
 
-# simluate uniform random covering of a 
+# simluate uniform random covering of a
 # transcript by reads of equal length
-# 
+#
 # this is a model for Illumina single end reads
 
 use strict;
@@ -24,14 +24,26 @@ use warnings;
 
 use Getopt::Std;
 
-my %params = (t => "1");
-getopts('L:N:k:t:', \%params);
 # -L	length of transcript
 # -N	number of reads
 # -k 	length of read
-# -p	number of threads
+# -t	number of threads
+my %params = ( t => "1" );
+getopts( 'L:N:k:t:', \%params );
 
+# calculate probability using my formula
+{
+	use bignum;
 
+	sub calc_prob {
+		my $params = shift;
+		my $k      = $params->{k};
+		my $N      = $params->{N};
+		my $L      = $params->{L} - $k + 1;    # effective length
+		my $prob = 0;
+		$prob;
+	}
 
-
+	printf "%g\n", &calc_prob( \%params );
+}
 
