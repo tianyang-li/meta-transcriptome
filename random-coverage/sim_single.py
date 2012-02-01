@@ -15,24 +15,60 @@
 # You should have received a copy of the GNU General Public License
 
 import sys
-import scipy
+import random
 import multiprocessing
 import getopt
 
-def main(sysargs):
+class SimSingleParams(object):
+    def __init__(self, L, k, N, runs):
+        self.L = L
+        self.k = k
+        self.N = N
+        self.runs = runs
+
+def sim_single(params):
+    L = params.L
+    k = params.k
+    N = params.N
+    runs = params.runs
+    single_contig_lens = []
+    random.seed()
+    for i in range(runs):
+        read_pos = []
+        for j in range(N):
+            read_pos.append(random.randint(0, L - 1))       
+        single_contig_len = SingleContigLen(read_pos, k)
+        if single_contig_len != 0:
+            single_contig_lens.append(single_contig_len)
+
+def SingleContigLen(read_pos, k):
+    read_pos.sort()
+    contig_len = 0
+    pos = read_pos[0]
+    for next_pos in read_pos[1:]:
+        if next_pos != pos:
+            if pos + k <= next_pos:
+                return 0
+            contig_len += (next_pos - pos)
+            pos = next_pos
+    contig_len += k
+    return contig_len
+
+if __name__ == '__main__':
+    sysargs = sys.argv[1:]
     try:
         opts, args = getopt.getopt(sysargs, 'L:N:k:r:p:')
     except getopt.GetoptError as err:
         print >> sys.stderr, str(err)
         sys.exit(2)
-    L = None # effective length
+    L = None  # effective length
     k = None
     N = None
     runs = None
-    p = 1
+    p = 1  # number of parallel computations
     for o, a in opts:
         if o == '-L':
-            eL = int(a)
+            L = int(a)
         elif o == '-k':
             k = int(a)
         elif o == '-r':
@@ -41,10 +77,15 @@ def main(sysargs):
             N = int(a)
         elif o == '-p':
             p = int(a)
-    if (eL == None) or (k == None) or (N == None) or (runs == None):
+    if (L == None) or (k == None) or (N == None) or (runs == None):
         print >> sys.stderr, "Missing options!"
         sys.exit(2)
     L = L - k + 1 
+    chunksize = runs / p + 1
     
-if __name__ == '__main__':
-    main(sys.argv[1:])
+    pool = multiprocessing.Pool(processes=p)
+    sim_single_params = []
+    for i in range(p):
+        sim_single_params.append(SimSingleParams(L, k, N, chunksize))
+    print pool.map(sim_single, sim_single_params)
+
