@@ -25,17 +25,14 @@ import getopt
 import time
 import re
 
-def print_nuc_fasta(params):
-    gi = params[0]
-    lock = params[1]
+def print_nuc_fasta(gi):
     gb = None
     try:
         gb = Entrez.efetch(db='protein', rettype='gp', id=gi, retmode='xml')
     except Exception as err:
-        print str(err)
+        print >> sys.stderr, str(err)
         pass
-    with lock:
-        print >> sys.stderr, "%s GI: %s" % (str(time.asctime()), gi)
+    print >> sys.stderr, "%s GI: %s" % (str(time.asctime()), gi)
     gb = Entrez.read(gb)[0]
     if 'GBSeq_feature-table' in gb:
         for feature_equal in gb['GBSeq_feature-table']:
@@ -54,12 +51,11 @@ def print_nuc_fasta(params):
                     try:
                         gi_fasta = Entrez.efetch(db='nuccore', rettype='fasta', id=nuccore_id, strand=strand, seq_stop=seq_stop, seq_start=seq_start)
                         gi_fasta = gi_fasta.read()
+                        gi_fasta = gi_fasta[0] + "gi|" + gi + "|" + gi_fasta[1:] + "\n"
                     except Exception as err:
-                        print str(err)
+                        print >> sys.stderr, str(err)
                         pass
-                    with lock:
-                        print region
-                        print gi_fasta
+                    return gi_fasta
 
 if __name__ == '__main__':
     try:
@@ -75,19 +71,19 @@ if __name__ == '__main__':
         elif o == '-m':
             email = a
     Entrez.email = email
-    mgr = multiprocessing.Manager()
     gis = []
     for gi_file in args:
         with open(gi_file, 'r') as fin:
             for gi in fin:
                 gi = gi.strip()
                 if len(gi) != 0:
-                    gis.append([gi, mgr.Lock()])
+                    gis.append(gi)
     chunksize = len(gis) / p
     pool = multiprocessing.Pool(p)
-    pool.map(print_nuc_fasta, gis, chunksize=chunksize)
+    nuc_fastas = pool.map(print_nuc_fasta, gis, chunksize=chunksize)
     pool.close()
     pool.join()
-                
+    for nuc_fasta in nuc_fastas:
+        print nuc_fasta,            
     
     
