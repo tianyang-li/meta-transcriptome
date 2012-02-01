@@ -39,28 +39,27 @@ def print_nuc_fasta(params):
     gb = Entrez.read(gb)[0]
     if 'GBSeq_feature-table' in gb:
         for feature_equal in gb['GBSeq_feature-table']:
-            if feature_equal['GBFeature_quals'][0]['GBQualifier_name'] == 'gene':
-                for feature in feature_equal['GBFeature_quals']:
-                    if feature['GBQualifier_name'] == 'coded_by':
-                        region = feature['GBQualifier_value']
-                        strand = 1
-                        if re.match(r'complement(\S+)', region) != None:
-                            strand = 2
-                            region = region[11:-1]
-                        region = region.split(":")
-                        region[1] = region[1].split("..")
-                        nuccore_id = region[0]
-                        seq_start = region[1][0]
-                        seq_stop = region[1][1]
-                        try:
-                            gi_fasta = Entrez.efetch(db='nuccore', rettype='fasta', id=nuccore_id, strand=strand, seq_stop=seq_stop, seq_start=seq_start)
-                            gi_fasta = gi_fasta.read()
-                        except Exception as err:
-                            print str(err)
-                            pass
-                        with lock:
-                            print region
-                            print gi_fasta
+            for feature in feature_equal['GBFeature_quals']:
+                if feature['GBQualifier_name'] == 'coded_by':
+                    region = feature['GBQualifier_value']
+                    strand = 1
+                    if re.match(r'complement(\S+)', region) != None:
+                        strand = 2
+                        region = region[11:-1]
+                    region = region.split(":")
+                    region[1] = region[1].split("..")
+                    nuccore_id = region[0]
+                    seq_start = region[1][0]
+                    seq_stop = region[1][1]
+                    try:
+                        gi_fasta = Entrez.efetch(db='nuccore', rettype='fasta', id=nuccore_id, strand=strand, seq_stop=seq_stop, seq_start=seq_start)
+                        gi_fasta = gi_fasta.read()
+                    except Exception as err:
+                        print str(err)
+                        pass
+                    with lock:
+                        print region
+                        print gi_fasta
 
 if __name__ == '__main__':
     try:
