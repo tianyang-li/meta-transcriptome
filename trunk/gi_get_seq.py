@@ -20,10 +20,45 @@
 
 from Bio import Entrez
 import sys
+import multiprocessing
+import getopt
 
-def main(args):
-    fin = open(args[0], 'r')
-    fin.close()
+def print_nuc_fasta(params):
+    gi = params[0]
+    lock = params[1]
+    gb = Entrez.efetch(db='protein', rettype='gb', id=gi, retmode='xml')
+    gb = Entrez.read(gb)
+    with lock:
+        # TODO: GenBank get nuc fasta 
+        print gb
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'p:m:')
+    except getopt.GetoptError as err:
+        print >> sys.stderr, str(err)
+        sys.exit(2)
+    p = 1
+    email = "example@example.com"
+    for o, a in opts:
+        if o == '-p':
+            p = int(a)
+        elif o == '-m':
+            email = a
+    Entrez.email = email
+    mgr = multiprocessing.Manager()
+    gis = []
+    for gi_file in args:
+        with open(gi_file, 'r') as fin:
+            for gi in fin:
+                gi = gi.strip()
+                if len(gi) != 0:
+                    gis.append([gi, mgr.Lock()])
+    chunksize = len(gis) / p
+    pool = multiprocessing.Pool(p)
+    pool.map(print_nuc_fasta, gis, chunksize=chunksize)
+    pool.close()
+    pool.join()
+                
+    
+    
