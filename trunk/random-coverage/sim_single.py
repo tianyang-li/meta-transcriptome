@@ -18,6 +18,7 @@ import sys
 import random
 import multiprocessing
 import getopt
+import json
 
 class SimSingleParams(object):
     def __init__(self, L, k, N, runs):
@@ -40,6 +41,7 @@ def sim_single(params):
         single_contig_len = SingleContigLen(read_pos, k)
         if single_contig_len != 0:
             single_contig_lens.append(single_contig_len)
+    return single_contig_lens
 
 def SingleContigLen(read_pos, k):
     read_pos.sort()
@@ -55,9 +57,8 @@ def SingleContigLen(read_pos, k):
     return contig_len
 
 if __name__ == '__main__':
-    sysargs = sys.argv[1:]
     try:
-        opts, args = getopt.getopt(sysargs, 'L:N:k:r:p:')
+        opts, args = getopt.getopt(sys.argv[1:], 'L:N:k:r:p:')
     except getopt.GetoptError as err:
         print >> sys.stderr, str(err)
         sys.exit(2)
@@ -87,5 +88,18 @@ if __name__ == '__main__':
     sim_single_params = []
     for i in range(p):
         sim_single_params.append(SimSingleParams(L, k, N, chunksize))
-    print pool.map(sim_single, sim_single_params)
+    results = pool.map(sim_single, sim_single_params)
+    pool.close()
+    pool.join()
+    contig_lens = []
+    for result in results:
+        contig_lens.extend(result)
+    L = L + k - 1
+    len_distr = {}
+    runs = chunksize * p
+    for i in range(1, L + 1):
+        len_distr[i] = float(contig_lens.count(i)) / float(runs)
+    sim_result = {"L": L, "k": k, "N": N, "contig_len": len_distr}
+    print json.dumps(sim_result)
+    
 
