@@ -14,6 +14,16 @@
 #
 # You should have received a copy of the GNU General Public License
 
+"""
+./gi-get-seq.py file-containing-GI output-seq-file
+"""
+
 from Bio import Entrez
+import sys
 
+def main(args):
+    fin = open(args[0], 'r')
+    fin.close()
 
+if __name__ == '__main__':
+    main(sys.argv[1:])
