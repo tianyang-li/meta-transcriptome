@@ -28,7 +28,7 @@ class SimSingleParams(object):
         self.runs = runs
 
 def sim_single(params):
-    L = params.L
+    L = params.L  #effective length
     k = params.k
     N = params.N
     runs = params.runs
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     except getopt.GetoptError as err:
         print >> sys.stderr, str(err)
         sys.exit(2)
-    L = None  # effective length
+    L = None  
     k = None
     N = None
     runs = None
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     if (L == None) or (k == None) or (N == None) or (runs == None):
         print >> sys.stderr, "Missing options!"
         sys.exit(2)
-    L = L - k + 1 
+    L = L - k + 1  #effective length
     chunksize = runs / p + 1
     
     pool = multiprocessing.Pool(processes=p)
