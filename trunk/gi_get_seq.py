@@ -14,10 +14,6 @@
 #
 # You should have received a copy of the GNU General Public License
 
-"""
-./gi-get-seq.py file-containing-GI output-seq-file
-"""
-
 from Bio import Entrez
 import sys
 import multiprocessing
