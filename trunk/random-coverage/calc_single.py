@@ -21,20 +21,22 @@ import json
 import scipy
 
 class CalcSingleParams(object):
-    def __init__(self, L, k, N, contig_len):
+    def __init__(self, L, k, n):
         self.L = L
         self.k = k
-        self.N = N
+        self.n = n
         self.contig_len = contig_len
 
 def calc_single(params):
     L = params.L
     k = params.k
-    N = params.N
-    cl = params.contig_len
-    prob = 0
+    n = params.n
+    prob_list = []
     #TODO: calculate this probability
-    return cl, prob
+    for cl in range(1, L + 1):
+        prob = 0
+        prob_list.append(prob)
+    return prob_list
 
 if __name__ == '__main__':
     try:
@@ -56,12 +58,20 @@ if __name__ == '__main__':
     if (N == None) or (L == None) or (k == None):
         print sys.stderr, "Missing options"
         sys.exit(2)
-    chunksize = (L - k + 1) / p 
     calc_params = []
-    for contig_len in range(k, L + 1):
-        calc_params.append(CalcSingleParams(L, k, N, contig_len))
+    for n in range(1, L + 1):  # n is the number of possible starting positions
+        calc_params.append(CalcSingleParams(L, k, n))
     pool = multiprocessing.Pool(p)
-    results = pool.map(calc_single, calc_params, chunksize=chunksize)
+    prob_lists = pool.map(calc_single, calc_params)
     pool.close()
     pool.join()
+    probs = {}
+    for n in range(1, L + 1):
+        probs[n] = 0
+    for n, prob_list in zip(range(1, L + 1), prob_lists):
+        for cl, prob in zip(range(1, L + 1), prob_list):
+            probs[cl] += prob
+    calc_result = {'L': L, 'k': k, 'N': N, 'contig_len': probs}
+    print json.dumps(calc_result)
+    
         
