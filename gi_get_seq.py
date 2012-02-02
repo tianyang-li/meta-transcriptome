@@ -51,7 +51,7 @@ def print_nuc_fasta(gi):
                     try:
                         gi_fasta = Entrez.efetch(db='nuccore', rettype='fasta', id=nuccore_id, strand=strand, seq_stop=seq_stop, seq_start=seq_start)
                         gi_fasta = gi_fasta.read()
-                        gi_fasta = gi_fasta[0] + "gi|" + gi + "|" + gi_fasta[1:] + "\n"
+                        gi_fasta = gi_fasta[0] + "gi|" + gi + "|" + gi_fasta[1:]
                     except Exception as err:
                         print >> sys.stderr, str(err)
                         pass
@@ -78,12 +78,13 @@ if __name__ == '__main__':
                 gi = gi.strip()
                 if len(gi) != 0:
                     gis.append(gi)
-    chunksize = len(gis) / p
     pool = multiprocessing.Pool(p)
-    nuc_fastas = pool.map(print_nuc_fasta, gis, chunksize=chunksize)
+    nuc_fastas = pool.map(print_nuc_fasta, gis)
     pool.close()
     pool.join()
     for nuc_fasta in nuc_fastas:
-        print nuc_fasta,            
+        if nuc_fasta != None:
+            print nuc_fasta            
+
     
     
