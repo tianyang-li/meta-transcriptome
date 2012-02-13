@@ -36,7 +36,7 @@ def umve_L(d, N):
         est_L.append(est)
     # TODO: change to return the estimate
     # rather than the list
-    return est_L
+    return est_L[-1]
 
 def main(args):
     N = None
