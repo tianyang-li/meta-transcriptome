@@ -34,8 +34,6 @@ def umve_L(d, N):
         if l != 0:
             est = float(est) / float((l + 1) ** N - 2 * (l ** N) + (l - 1) ** N)
         est_L.append(est)
-    # TODO: change to return the estimate
-    # rather than the list
     return est_L[-1]
 
 def main(args):
