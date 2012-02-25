@@ -17,24 +17,32 @@
 """
 (effective) single contig length distribution 
 given $N$ reads and (effective) read length $k$
+$Y_{i + 1} - Y_{i} \leq k$
 """
 
 import getopt
 import sys
 
-from nzmath.combinatorial import stirling1
-from scipy import comb
-
 import matplotlib.pyplot as plt
 
+import help_1
+
 def rand_read_len_prob(N, k):
+    """
+    cdf of contig length that can be produced
+    when N reads of length k are used 
+    """
     prob = []
-    #TODO
-    sum = 0
+    for r in range(0, (N - 1) * k + 1):
+        prob.append(help_1.read_split_contig(N, r, k))
+    all_num = 0
     for x in prob:
-        sum += prob
-    map(lambda x: x / sum, prob)
-    return prob
+        all_num += x
+    prob = map(lambda x: float(x) / float(all_num), prob)
+    cdf = [prob[0]]
+    for i in range(len(prob) - 1):
+        cdf.append(cdf[i] + prob[i + 1])
+    return cdf
 
 def main(args):
     N, k = None, None
@@ -51,8 +59,8 @@ def main(args):
     if N == None or k == None:
         print >> sys.stderr, "Missing options"
         sys.exit(2)
-    prob = rand_read_len_prob(N, k)
-    plt.plot(range(len(prob)), prob)
+    cdf = rand_read_len_prob(N, k)
+    plt.plot(range(len(cdf)), cdf)
     plt.grid(True)
     plt.show()
 
