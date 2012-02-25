@@ -18,23 +18,27 @@
 (effective) single contig length distribution 
 given (effective) length $L$, (effective) read 
 length $k$, and the number of reads $N$
+$Y_{i + 1} - Y_{i} \leq k$
 """
 
 import getopt
 import sys
 
-from nzmath.combinatorial import stirling1
-from scipy import comb
-
 import matplotlib.pyplot as plt
+
+import help_1
 
 def single_contig_len_prb(L, N, k):
     prob = []
-    #TODO
-    sum = 0
+    for r in range(L):
+        prob.append((L - r) * help_1.read_split_contig(N, r, k))
+    all_num = 0
     for x in prob:
-        sum += x
-    map(lambda x: x / sum, prob)
+        all_num += x
+    prob = map(lambda x: float(x) / float(all_num), prob)
+    cdf = [prob[0]]
+    for i in range(len(prob) - 1):
+        cdf.append(cdf[i] + prob[i + 1])
     return prob
 
 def main(args):
@@ -44,11 +48,18 @@ def main(args):
     except getopt.GetoptError as err:
         print >> sys.stderr, str(err)
         sys.exit(2)
+    for o, a in opts:
+        if o == '-L':
+            L = int(a)
+        if o == '-N':
+            N = int(a)
+        if o == '-k':
+            k = int(a)
     if L == None or N == None or k == None:
         print >> sys.stderr, "Missing options"
         sys.exit(2)
-    prob = single_contig_len_prb(L, N, k)
-    plt.plot(range(len(prob)),prob)
+    cdf = single_contig_len_prb(L, N, k)
+    plt.plot(range(len(cdf)), cdf)
     plt.grid(True)
     plt.show()
     
