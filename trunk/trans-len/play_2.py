@@ -39,7 +39,7 @@ def single_contig_len_prb(L, N, k):
     cdf = [prob[0]]
     for i in range(len(prob) - 1):
         cdf.append(cdf[i] + prob[i + 1])
-    return prob
+    return cdf
 
 def main(args):
     L, N, k = None, None, None
