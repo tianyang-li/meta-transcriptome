@@ -44,9 +44,9 @@ def read_split_contig(N, r, k):
     where there are $n$ distinct starting positions
     satisfying $0 < Y_{i + 1} - Y_i \leq k$
     """
-    splits = 0
     if r == 0:
-        splits = 1
+        return 1
+    splits = 0
     for n in range(2, min(r + 2, N + 1)):
         splits += (factorial(n, exact=True) * stirling2(N, n) * composition(r, n - 1, k))
     return splits
