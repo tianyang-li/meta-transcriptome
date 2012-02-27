@@ -31,6 +31,8 @@ def rand_read_len_prob(N, k):
     """
     cdf of contig length that can be produced
     when N reads of length k are used 
+    
+    it is assumed that all overlaps between reads are eqaully likely
     """
     prob = []
     for r in range(0, (N - 1) * k + 1):
