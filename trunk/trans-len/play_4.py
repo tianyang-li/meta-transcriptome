@@ -21,6 +21,9 @@ import play_3
 
 def main(args):
     N, pv = None, None
+    if N == None or pv == None:
+        print >> sys.stderr, "Missing options"
+        sys.exit(2)
 
 
 if __name__ == '__main__':
