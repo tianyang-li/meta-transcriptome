@@ -35,6 +35,32 @@ import os
 import base64
 import matplotlib.pyplot as plt
 
+def sim_CN(L, k, runs, N_max):
+    """
+    simulate tuples of $(c, N, \pm 1)$ where
+    $c$ is the (effective) contig length and 
+    $N$ is the number of reads on the contig
+    and the result is $1$ if this contig is not the
+    only one from the transcript, $-1$ if the contig is 
+    the only one from the transcript
+    
+    L    (effective) transcript length
+    k    max distance between 2 read starting positions, (effective) read length
+    runs    number of runs for each possible $N$
+    N_max    maximum $N$ to use in simulation (choose this according to Lander-Waterman?)
+    
+    @return: a dictionary containing base64 encoded seed and tuples
+    """
+    seed = os.urandom(64)
+    random.seed(seed)
+    seed_b64 = base64.b64encode(seed)
+    
+    cn_tups = []
+    for N in range(1, N_max + 1):
+        start_pos = []
+        for i in range(N):
+            start_pos.append(random.randint(1, L))
+
 def main(args):
     L, k, runs, N_max = None, None, None, None
     try:
@@ -54,9 +80,7 @@ def main(args):
     if L == None or k == None or runs == None or N_max == None:
         print >> sys.stderr, "Missing options"
         sys.exit(2)
-    seed = os.urandom(64)
-    random.seed(seed)
-    seed_b64 = base64.b64encode(seed)
+    
     plt.grid(True)
     plt.show()
 
