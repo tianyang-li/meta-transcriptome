@@ -57,9 +57,10 @@ def sim_CN(L, k, runs, N_max):
     
     cn_tups = []
     for N in range(1, N_max + 1):
-        start_pos = []
-        for i in range(N):
-            start_pos.append(random.randint(1, L))
+        for r in runs:
+            start_pos = []
+            for i in range(N):
+                start_pos.append(random.randint(1, L))
 
 def main(args):
     L, k, runs, N_max = None, None, None, None
