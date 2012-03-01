@@ -24,6 +24,7 @@ the only one from the transcript
 
 -L    (effective) transcript length
 -k    max distance between 2 read starting positions, (effective) read length
+          $Y_{i + 1} - Y_i \leq k$
 -r    number of runs for each possible $N$
 -N    maximum $N$ to use in simulation (choose this according to Lander-Waterman?)
 """
@@ -44,10 +45,11 @@ def sim_CN(L, k, runs, N_max):
     only one from the transcript, $-1$ if the contig is 
     the only one from the transcript
     
-    L    (effective) transcript length
-    k    max distance between 2 read starting positions, (effective) read length
-    runs    number of runs for each possible $N$
-    N_max    maximum $N$ to use in simulation (choose this according to Lander-Waterman?)
+    L: (effective) transcript length
+    k: max distance between 2 read starting positions, (effective) read length
+        $Y_{i + 1} - Y_i \leq k$
+    runs: number of runs for each possible $N$
+    N_max: maximum $N$ to use in simulation (choose this according to Lander-Waterman?)
     
     @return: a dictionary containing base64 encoded seed and tuples
     """
@@ -61,6 +63,10 @@ def sim_CN(L, k, runs, N_max):
             start_pos = []
             for i in range(N):
                 start_pos.append(random.randint(1, L))
+            if len(start_pos) == 1:
+                start_pos[0][2] = -1
+    
+    return {'seed_b64': seed_b64, 'sim_CN': cn_tups}
 
 def main(args):
     L, k, runs, N_max = None, None, None, None
@@ -82,8 +88,7 @@ def main(args):
         print >> sys.stderr, "Missing options"
         sys.exit(2)
     
-    plt.grid(True)
-    plt.show()
+    
 
 if __name__ == '__main__':
     main(sys.argv[1:])
