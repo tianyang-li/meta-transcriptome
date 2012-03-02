@@ -29,12 +29,14 @@ import rpy2.robjects as robj
 from rpy2.robjects.packages import importr
 from Bio import SeqIO
 import HTSeq
+import datetime
 
 def count_bowtie2_align(bowtie2, db_len):
     for align in HTSeq.SAM_Reader(bowtie2):
         if align.aligned:
             if db_len[align.iv.chrom][0] > align.iv.start and align.iv.start >= 0:
                 db_len[align.iv.chrom][1][align.iv.start] += 1
+                db_len[align.iv.chrom][2] += 1
         
         
 def get_fasta_len(fasta_file):
@@ -44,7 +46,8 @@ def get_fasta_len(fasta_file):
     """
     fasta_len = {}
     for rec in SeqIO.parse(fasta_file, 'fasta'):
-        fasta_len[str(rec.id)] = [len(rec.seq), [0] * len(rec.seq)]
+        # [length of seq (int), reads distribution (lsit), total reads count]
+        fasta_len[str(rec.id)] = [len(rec.seq), [0] * len(rec.seq), 0]
     return fasta_len
 
 def main(args):
@@ -66,7 +69,14 @@ def main(args):
         sys.exit(2)
     contigs_len = get_fasta_len(contigs)
     count_bowtie2_align(bowtie2, contigs_len)
-    importr('EMT')
+    EMT = importr('EMT')
+    mt = EMT.multinomial_test
+    for contig_entry, i in zip(contigs_len.values(), range(1, len(contigs_len) + 1)):
+        if contig_entry[2] > 2:
+            print >> sys.stderr, "#%d: length: %d, reads: %d, time: %s" % (i, contig_entry[0], contig_entry[2], datetime.datetime.now())
+            pv = mt(robj.IntVector(contig_entry[1][:-(read_len - 1)]), robj.FloatVector([1 / float(contig_entry[0] - read_len + 1)] * (contig_entry[0] - read_len + 1)), MonteCarlo=True, ntrial=1000000)            
+            # contig length, p-value
+            print contig_entry[0], pv[-1][0]
     
-if __name__ == '__init__':
+if __name__ == '__main__':
     main(sys.argv[1:])
