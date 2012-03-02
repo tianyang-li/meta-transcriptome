@@ -21,6 +21,7 @@ exact multinomial test
 -b bowtie2 results
 -l read length (assumed to be all equal)
 -c assembled contigs
+-t number of trials to use in test
 """
 
 import sys
@@ -51,9 +52,9 @@ def get_fasta_len(fasta_file):
     return fasta_len
 
 def main(args):
-    bowtie2, read_len, contigs = None, None, None
+    bowtie2, read_len, contigs, trial = None, None, None, None
     try:
-        opts, args = getopt.getopt(args, 'b:l:c:')
+        opts, args = getopt.getopt(args, 'b:l:c:t:')
     except getopt.GetoptError as err:
         print >> sys.stderr, str(err)
         sys.exit(2)
@@ -64,19 +65,23 @@ def main(args):
             read_len = int(a)
         if o == '-c':
             contigs = a
-    if bowtie2 == None or read_len == None or contigs == None:
+        if o == '-t':
+            trial = int(a)
+    if bowtie2 == None or read_len == None or contigs == None or trial == None:
         print >> sys.stderr, "Missing options!"
         sys.exit(2)
     contigs_len = get_fasta_len(contigs)
     count_bowtie2_align(bowtie2, contigs_len)
     EMT = importr('EMT')
     mt = EMT.multinomial_test
-    for contig_entry, i in zip(contigs_len.values(), range(1, len(contigs_len) + 1)):
-        if contig_entry[2] > 2:
-            print >> sys.stderr, "#%d: length: %d, reads: %d, time: %s" % (i, contig_entry[0], contig_entry[2], datetime.datetime.now())
-            pv = mt(robj.IntVector(contig_entry[1][:-(read_len - 1)]), robj.FloatVector([1 / float(contig_entry[0] - read_len + 1)] * (contig_entry[0] - read_len + 1)), MonteCarlo=True, ntrial=1000000)            
+    fout = open("uniform_len_p-value", 'w')
+    for contig_entry, i in zip(contigs_len.items(), range(1, len(contigs_len) + 1)):
+        if contig_entry[1][2] > 2 and contig_entry[1][0] > read_len - 1:
+            print >> sys.stderr, "#%d: length: %d, reads: %d, time: %s" % (i, contig_entry[1][0], contig_entry[1][2], datetime.datetime.now())
+            pv = mt(robj.IntVector(contig_entry[1][1][:-(read_len - 1)]), robj.FloatVector([1 / float(contig_entry[1][0] - read_len + 1)] * (contig_entry[1][0] - read_len + 1)), MonteCarlo=True, ntrial=trial)            
             # contig length, p-value
-            print contig_entry[0], pv[-1][0]
+            fout.write("%s %d %f\n" % (contig_entry[0], contig_entry[1][0], pv[-1][0]))
+    fout.close()
     
 if __name__ == '__main__':
     main(sys.argv[1:])
