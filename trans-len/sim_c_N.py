@@ -36,6 +36,26 @@ import os
 import base64
 import matplotlib.pyplot as plt
 
+def count_CN(start_pos, k):
+    cn_tups = []
+    n_c, l_c = 0, 0
+    prev = None
+    for pos in range(len(start_pos)):
+        if prev == None:
+            n_c = start_pos[pos]
+        else:
+            if pos - prev <= k:
+                n_c += start_pos[pos]
+                l_c += pos - prev
+            else:
+                cn_tups.append([n_c, l_c, 1])
+                n_c = start_pos[pos]
+                l_c = 0
+        prev = pos
+    if len(cn_tups) == 1:
+        cn_tups[0][2] = -1
+    return cn_tups
+
 def sim_CN(L, k, runs, N_max):
     """
     simulate tuples of $(c, N, \pm 1)$ where
@@ -60,11 +80,10 @@ def sim_CN(L, k, runs, N_max):
     cn_tups = []
     for N in range(1, N_max + 1):
         for r in runs:
-            start_pos = []
+            start_pos = [0] * L
             for i in range(N):
-                start_pos.append(random.randint(1, L))
-            if len(start_pos) == 1:
-                start_pos[0][2] = -1
+                start_pos[random.randint(0, L - 1)] += 1
+            cn_tups.extend(count_CN(start_pos, k))
     
     return {'seed_b64': seed_b64, 'sim_CN': cn_tups}
 
