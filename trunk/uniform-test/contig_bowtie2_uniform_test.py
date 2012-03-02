@@ -79,8 +79,8 @@ def main(args):
         if contig_entry[1][2] > 2 and contig_entry[1][0] > read_len - 1:
             print >> sys.stderr, "#%d: length: %d, reads: %d, time: %s" % (i, contig_entry[1][0], contig_entry[1][2], datetime.datetime.now())
             pv = mt(robj.IntVector(contig_entry[1][1][:-(read_len - 1)]), robj.FloatVector([1 / float(contig_entry[1][0] - read_len + 1)] * (contig_entry[1][0] - read_len + 1)), MonteCarlo=True, ntrial=trial)            
-            # contig length, p-value
-            fout.write("%s %d %f\n" % (contig_entry[0], contig_entry[1][0], pv[-1][0]))
+            # contig name, contig length, reads count, p-value
+            fout.write("%s %d  %d %f\n" % (contig_entry[0], contig_entry[1][0], contig_entry[1][2], pv[-1][0]))
     fout.close()
     
 if __name__ == '__main__':
