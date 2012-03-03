@@ -50,7 +50,7 @@ def calc_L_N(c, n, k):
              entry [c, n] is the corresponding [L, N]
     """
     LN_tab = [[None, [Fraction(1), Fraction(1)]]]
-    if c==0:
+    if c == 0:
         for n_val in range(2, n + 1):
             L, N = 1, n_val
             tot_cn_num = 0
@@ -116,7 +116,7 @@ def main(args):
                 float_LN_tab.append([None])
             else:
                 float_LN_tab[-1].append([float(LN_tup[0]), float(LN_tup[1])])
-    json.dumps(float_LN_tab)
+    print json.dumps(float_LN_tab)
     
 
 if __name__ == '__main__':
