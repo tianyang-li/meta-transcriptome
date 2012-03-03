@@ -55,12 +55,14 @@ def calc_L_N(c, n, k):
         tot_cn_num = 0
         L_tmp1, N_tmp1 = 0, 0
         for n_tmp in range(1, N):
-            tot_cn_num += get_cn_num(L, N, 0, n_tmp, k)
-            L_tmp1 += (get_cn_num(L, N, 0, n_tmp, k) * LN_tab[0][n_tmp][0])
-            N_tmp1 += (get_cn_num(L, N, 0, n_tmp, k) * LN_tab[0][n_tmp][1])
-        tot_cn_num += get_cn_num(L, N, 0, N, k)
-        L_est = (tot_cn_num - L_tmp1) / get_cn_num(L, N, 0, N, k)
-        N_est = (tot_cn_num * N - N_tmp1) / get_cn_num(L, N, 0, N, k)
+            tmp_cn_num = get_cn_num(L, N, 0, n_tmp, k)
+            tot_cn_num += tmp_cn_num
+            L_tmp1 += (tmp_cn_num * LN_tab[0][n_tmp][0])
+            N_tmp1 += (tmp_cn_num * LN_tab[0][n_tmp][1])
+        tmp_cn_num = get_cn_num(L, N, 0, N, k)
+        tot_cn_num += tmp_cn_num
+        L_est = (tot_cn_num - L_tmp1) / tmp_cn_num
+        N_est = (tot_cn_num * N - N_tmp1) / tmp_cn_num
         LN_tab[0].append([L_est, N_est])
     for n_val in range(1, n + 1):
         L, N = c + 1, n_val
@@ -68,16 +70,19 @@ def calc_L_N(c, n, k):
         L_tmp1, N_tmp1 = 0, 0
         for c_prev in range(c):
             for n_prev in range(1, N + 1):
-                tot_cn_num += get_cn_num(L, N, c_prev, n_prev, k)
-                L_tmp1 += (get_cn_num(L, N, c_prev, n_prev, k) * LN_tab[c_prev][n_prev][0])
-                N_tmp1 += (get_cn_num(L, N, c_prev, n_prev, k) * LN_tab[c_prev][n_prev][1])
+                tmp_cn_num = get_cn_num(L, N, c_prev, n_prev, k)
+                tot_cn_num += tmp_cn_num
+                L_tmp1 += (tmp_cn_num * LN_tab[c_prev][n_prev][0])
+                N_tmp1 += (tmp_cn_num * LN_tab[c_prev][n_prev][1])
         for n_prev in range(1, N):
-            tot_cn_num += get_cn_num(L, N, c, n_prev, k)
-            L_tmp1 += (get_cn_num(L, N, c, n_prev, k) * LN_tab[c][n_prev][0])
-            N_tmp1 += (get_cn_num(L, N, c, n_prev, k) * LN_tab[c][n_prev][1])
-        tot_cn_num += get_cn_num(L, N, c, N, k)
-        L_est = (tot_cn_num * L - L_tmp1) / get_cn_num(L, N, c, N, k)
-        N_est = (tot_cn_num * N - N_tmp1) / get_cn_num(L, N, c, N, k)
+            tmp_cn_num = get_cn_num(L, N, c, n_prev, k)
+            tot_cn_num += tmp_cn_num
+            L_tmp1 += (tmp_cn_num * LN_tab[c][n_prev][0])
+            N_tmp1 += (tmp_cn_num * LN_tab[c][n_prev][1])
+        tmp_cn_num = get_cn_num(L, N, c, N, k)
+        tot_cn_num += tmp_cn_num
+        L_est = (tot_cn_num * L - L_tmp1) / tmp_cn_num
+        N_est = (tot_cn_num * N - N_tmp1) / tmp_cn_num
         if N == 1:
             LN_tab.append([None, [L_est, N_est]])
         else:
