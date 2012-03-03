@@ -25,38 +25,41 @@ the only one from the transcript
 -L    (effective) transcript length
 -k    max distance between 2 read starting positions, (effective) read length
           $Y_{i + 1} - Y_i \leq k$
--r    number of runs for each possible $N$
--N    maximum $N$ to use in simulation (choose this according to Lander-Waterman?)
+-r    number of runs 
+-N    number of reads on transcript 
 """
 
 import sys
 import getopt
 import random
+import json
 import os
 import base64
-import matplotlib.pyplot as plt
 
 def count_CN(start_pos, k):
     cn_tups = []
     n_c, l_c = 0, 0
     prev = None
     for pos in range(len(start_pos)):
-        if prev == None:
-            n_c = start_pos[pos]
-        else:
-            if pos - prev <= k:
-                n_c += start_pos[pos]
-                l_c += pos - prev
-            else:
-                cn_tups.append([n_c, l_c, 1])
+        if start_pos[pos] != 0:
+            if prev == None:
                 n_c = start_pos[pos]
-                l_c = 0
-        prev = pos
+            else:
+                if pos - prev <= k:
+                    n_c += start_pos[pos]
+                    l_c += pos - prev
+                else:
+                    cn_tups.append([n_c, l_c, 1])
+                    n_c = start_pos[pos]
+                    l_c = 0
+            prev = pos
+    if n_c != 0:
+        cn_tups.append([n_c, l_c, 1])
     if len(cn_tups) == 1:
         cn_tups[0][2] = -1
     return cn_tups
 
-def sim_CN(L, k, runs, N_max):
+def sim_CN(L, k, runs, N):
     """
     simulate tuples of $(c, N, \pm 1)$ where
     $c$ is the (effective) contig length and 
@@ -68,8 +71,8 @@ def sim_CN(L, k, runs, N_max):
     L: (effective) transcript length
     k: max distance between 2 read starting positions, (effective) read length
         $Y_{i + 1} - Y_i \leq k$
-    runs: number of runs for each possible $N$
-    N_max: maximum $N$ to use in simulation (choose this according to Lander-Waterman?)
+    runs: number of runs
+    N: number of reads on transcript
     
     @return: a dictionary containing base64 encoded seed and tuples
     """
@@ -78,17 +81,16 @@ def sim_CN(L, k, runs, N_max):
     seed_b64 = base64.b64encode(seed)
     
     cn_tups = []
-    for N in range(1, N_max + 1):
-        for r in runs:
-            start_pos = [0] * L
-            for i in range(N):
-                start_pos[random.randint(0, L - 1)] += 1
-            cn_tups.extend(count_CN(start_pos, k))
+    for r in range(runs):
+        start_pos = [0] * L
+        for i in range(N):
+            start_pos[random.randint(0, L - 1)] += 1
+        cn_tups.extend(count_CN(start_pos, k))
     
     return {'seed_b64': seed_b64, 'sim_CN': cn_tups}
 
 def main(args):
-    L, k, runs, N_max = None, None, None, None
+    L, k, runs, N = None, None, None, None
     try:
         opts, args = getopt.getopt(args, 'L:k:r:N:')
     except getopt.GetoptError as err:
@@ -102,11 +104,15 @@ def main(args):
         if o == '-r':
             runs = int(a)
         if o == '-N':
-            N_max = int(a)
-    if L == None or k == None or runs == None or N_max == None:
+            N = int(a)
+    if L == None or k == None or runs == None or N == None:
         print >> sys.stderr, "Missing options"
         sys.exit(2)
-    
+    sim_res = sim_CN(L, k, runs, N)
+    for res in sim_res['sim_CN']:
+        for x in res:
+            print x,
+        print ""
     
 
 if __name__ == '__main__':
