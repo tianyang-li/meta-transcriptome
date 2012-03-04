@@ -36,6 +36,9 @@ import os
 import base64
 
 def count_CN(start_pos, k):
+    """
+    [[# of reads, length of contig, single contig or not], ...]
+    """
     cn_tups = []
     n_c, l_c = 0, 0
     prev = None
