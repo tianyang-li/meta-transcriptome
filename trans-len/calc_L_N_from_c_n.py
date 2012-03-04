@@ -33,13 +33,15 @@ def get_cn_num(L, N, c, n, k):
     sum1 = 0
     if L - (2 * k + c + 1) >= 0:
         if L - (2 * k + c + 1) == 0:
-            sum1 += 1
+            if n == N:
+                sum1 += 1
         else:
             sum1 += (((L - (2 * k + c + 1)) ** (N - n)) * (L - (2 * k + c)))
     for i in range(k):
         if L - (i + k + c + 1) >= 0:
             if L - (i + k + c + 1) == 0:
-                sum1 += 2
+                if n == N:
+                    sum1 += 2
             else:
                 sum1 += (2 * ((L - (i + k + c + 1)) ** (N - n)))
     if sum1 == 0:

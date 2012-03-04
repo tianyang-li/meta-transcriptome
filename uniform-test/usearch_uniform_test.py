@@ -28,6 +28,11 @@ def count_b6_map(db_len, b6s):
         with open(b6, 'r') as fin:
             for entry in fin:
                 entry = entry.strip().split("\t")
+                db_seq = entry[1].split(" ")[0]
+                start_pos = int(entry[8])
+                db_len[db_seq][2] += 1
+                db_len[db_seq][1][start_pos - 1] += 1
+                
 
 def main(args):
     read_len, seq_db = None, None
