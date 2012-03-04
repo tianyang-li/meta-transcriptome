@@ -15,8 +15,9 @@
 # You should have received a copy of the GNU General Public License
 
 """
-compute estimators for all $(contig_len, contig_reads)$
+compute estimators for all (contig_len, contig_reads)
 $0 \leq contig_len \leq c$, $1 \leq contig_reads \leq n$
+$0 < Y_{i + 1} - Y_i \leq k$
 """
 
 import getopt

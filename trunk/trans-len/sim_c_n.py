@@ -32,7 +32,6 @@ the only one from the transcript
 import sys
 import getopt
 import random
-import json
 import os
 import base64
 
