@@ -17,6 +17,7 @@
 """
 compute estimators for all (contig_len, contig_reads)
 $0 \leq contig_len \leq c$, $1 \leq contig_reads \leq n$
+
 $0 < Y_{i + 1} - Y_i \leq k$
 """
 
@@ -73,28 +74,33 @@ def calc_L_N(c, n, k):
     else:
         LN_tab = calc_L_N(0, n, k)
         for c_val in range(1, c + 1):
-            for n_val in range(c_val + 1, n + 1):
+            for n_val in range(1, n + 1):
                 L, N = c_val + 1, n_val
+                if N == 1:
+                    LN_tab.append([None])
                 tot_cn_num = 0
                 L_tmp1, N_tmp1 = 0, 0
                 for c_prev in range(c_val):
-                    for n_prev in range(c_prev + 1, N + 1):
-                        tmp_cn_num = get_cn_num(L, N, c_prev, n_prev, k)
+                    for n_prev in range(1, N + 1):
+                        if LN_tab[c_prev][n_prev] != None:
+                            tmp_cn_num = get_cn_num(L, N, c_prev, n_prev, k)
+                            tot_cn_num += tmp_cn_num
+                            L_tmp1 += (tmp_cn_num * LN_tab[c_prev][n_prev][0])
+                            N_tmp1 += (tmp_cn_num * LN_tab[c_prev][n_prev][1])
+                for n_prev in range(1, N):
+                    if LN_tab[c_val][n_prev] != None:
+                        tmp_cn_num = get_cn_num(L, N, c_val, n_prev, k)
                         tot_cn_num += tmp_cn_num
-                        L_tmp1 += (tmp_cn_num * LN_tab[c_prev][n_prev][0])
-                        N_tmp1 += (tmp_cn_num * LN_tab[c_prev][n_prev][1])
-                for n_prev in range(c_val + 1, N):
-                    tmp_cn_num = get_cn_num(L, N, c_val, n_prev, k)
-                    tot_cn_num += tmp_cn_num
-                    L_tmp1 += (tmp_cn_num * LN_tab[c_val][n_prev][0])
-                    N_tmp1 += (tmp_cn_num * LN_tab[c_val][n_prev][1])
+                        L_tmp1 += (tmp_cn_num * LN_tab[c_val][n_prev][0])
+                        N_tmp1 += (tmp_cn_num * LN_tab[c_val][n_prev][1])
                 tmp_cn_num = get_cn_num(L, N, c_val, N, k)
                 tot_cn_num += tmp_cn_num
-                L_est = (tot_cn_num * L - L_tmp1) / tmp_cn_num
-                N_est = (tot_cn_num * N - N_tmp1) / tmp_cn_num
-                if N == c_val + 1:
-                    LN_tab.append([None] * (c_val + 1))
-                LN_tab[c_val].append([L_est, N_est])
+                if tmp_cn_num != 0:
+                    L_est = (tot_cn_num * L - L_tmp1) / tmp_cn_num
+                    N_est = (tot_cn_num * N - N_tmp1) / tmp_cn_num
+                    LN_tab[c_val].append([L_est, N_est])
+                else:
+                    LN_tab[c_val].append(None)
     return LN_tab
 
 def main(args):

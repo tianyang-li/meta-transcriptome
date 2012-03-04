@@ -27,9 +27,9 @@ import sim_c_n
 import calc_L_N_from_c_n
 
 def main(args):
-    L, N, k = None, None, None
+    L, N, k , runs = None, None, None, None
     try:
-        opts, args = getopt.getopt(args, 'L:N:k:')
+        opts, args = getopt.getopt(args, 'L:N:k:r:')
     except getopt.GetoptError as err:
         print >> sys.stderr, str(err)
         sys.exit(2)
@@ -40,8 +40,10 @@ def main(args):
             k = int(a)
         if o == '-N':
             N = int(a)
-    if L == None or N == None or k == None:
-        print >> sys.stderr, "Missin options!"
+        if o == '-r':
+            runs = int(a)
+    if L == None or N == None or k == None or runs == None:
+        print >> sys.stderr, "Missing options!"
         sys.exit(2)
     
 if __name__ == '__main__':
