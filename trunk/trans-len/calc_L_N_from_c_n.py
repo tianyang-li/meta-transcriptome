@@ -41,7 +41,7 @@ def get_cn_num(L, N, c, n, k):
             else:
                 sum1 += (2 * (L - (i + k + c)) * ((L - (i + k + c + 1)) ** (N - n)))
     if sum1 == 0:
-        if n==N:
+        if n == N:
             sum1 = L - c
         else:
             return 0
@@ -69,17 +69,17 @@ def calc_L_N(c, n, k):
             N_est = (tot_cn_num * N - N_tmp1) / tmp_cn_num
             LN_tab[0].append([L_est, N_est])
     else:
-        for n_val in range(1, n + 1):
+        for n_val in range(c + 1, n + 1):
             L, N = c + 1, n_val
             tot_cn_num = 0
             L_tmp1, N_tmp1 = 0, 0
             for c_prev in range(c):
-                for n_prev in range(1, N + 1):
+                for n_prev in range(c_prev + 1, N + 1):
                     tmp_cn_num = get_cn_num(L, N, c_prev, n_prev, k)
                     tot_cn_num += tmp_cn_num
                     L_tmp1 += (tmp_cn_num * LN_tab[c_prev][n_prev][0])
                     N_tmp1 += (tmp_cn_num * LN_tab[c_prev][n_prev][1])
-            for n_prev in range(1, N):
+            for n_prev in range(c + 1, N):
                 tmp_cn_num = get_cn_num(L, N, c, n_prev, k)
                 tot_cn_num += tmp_cn_num
                 L_tmp1 += (tmp_cn_num * LN_tab[c][n_prev][0])
@@ -88,10 +88,9 @@ def calc_L_N(c, n, k):
             tot_cn_num += tmp_cn_num
             L_est = (tot_cn_num * L - L_tmp1) / tmp_cn_num
             N_est = (tot_cn_num * N - N_tmp1) / tmp_cn_num
-            if N == 1:
-                LN_tab.append([None, [L_est, N_est]])
-            else:
-                LN_tab[c].append([L_est, N_est])
+            if N == c + 1:
+                LN_tab.append([None] * (c + 1))
+            LN_tab[c].append([L_est, N_est])
     return LN_tab
 
 def main(args):
