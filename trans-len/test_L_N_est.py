@@ -45,6 +45,15 @@ def main(args):
     if L == None or N == None or k == None or runs == None:
         print >> sys.stderr, "Missing options!"
         sys.exit(2)
+    sim_res = sim_c_n.sim_CN(L, k, runs, N)
+    LN_tab = calc_L_N_from_c_n.calc_L_N(L - 1, N, k)
+    for cn_tup in sim_res['sim_CN']:
+        if LN_tab[cn_tup[1]][cn_tup[0]] == None:
+            print >> sys.stderr, "Error, c: %d, n: %d" % (cn_tup[1].cn_tup[0])
+        else:
+            # L_est, N_est
+            print float(LN_tab[cn_tup[1]][cn_tup[0]][0]),
+            print float(LN_tab[cn_tup[1]][cn_tup[0]][1])
     
 if __name__ == '__main__':
     main(sys.argv[1:])
