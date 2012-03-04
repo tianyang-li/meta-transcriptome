@@ -23,7 +23,7 @@ import sim_c_n
 def main(args):
     runs, L, N, k = None, None, None, None
     try:
-        opts, args = getopt.getopt(args, 'r:L:N:')
+        opts, args = getopt.getopt(args, 'r:L:N:k:')
     except getopt.GetoptError as err:
         print sys.stderr, str(err)
         sys.exit(2)
@@ -42,10 +42,12 @@ def main(args):
         sys.exit(2)
     
     sim_res = sim_c_n.sim_CN(L, k, runs, N)
-    sim_cn_tab = [[0] * (N + 1)] * L
-    for cn_tup in sim_res['sim_cn']:
+    sim_cn_tab = []
+    for i in range(L):
+        sim_cn_tab.append([0] * (N + 1))
+    for cn_tup in sim_res['sim_CN']:
         sim_cn_tab[cn_tup[1]][cn_tup[0]] += 1
-    sim_cn_tab = map(lambda c_list: map(lambda cnt: float(cnt) / float(runs * N), c_list), sim_cn_tab)
+    sim_cn_tab = map(lambda c_list: map(lambda cnt: float(cnt) / float(len(sim_res['sim_CN'])), c_list), sim_cn_tab)
     print "####"
     for c_list in sim_cn_tab:
         for prob in c_list:
@@ -60,7 +62,7 @@ def main(args):
             tmp_cnt = calc_L_N_from_c_n.get_cn_num(L, N, c, n, k)
             calc_cn_tab[c].append(tmp_cnt)
             calc_sum += tmp_cnt
-    calc_cn_tab = map(lambda c_list: map(lambda cnt: float(cnt) / float(calc_sum)), calc_cn_tab)
+    calc_cn_tab = map(lambda c_list: map(lambda cnt: float(cnt) / float(calc_sum), c_list), calc_cn_tab)
     print "####" 
     for c_list in calc_cn_tab:
         for prob in c_list:

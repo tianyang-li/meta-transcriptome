@@ -41,7 +41,7 @@ def get_cn_num(L, N, c, n, k):
             if L - (i + k + c + 1) == 0:
                 sum1 += 2
             else:
-                sum1 += (2 * (L - (i + k + c)) * ((L - (i + k + c + 1)) ** (N - n)))
+                sum1 += (2 * ((L - (i + k + c + 1)) ** (N - n)))
     if sum1 == 0:
         if n == N:
             sum1 = L - c
