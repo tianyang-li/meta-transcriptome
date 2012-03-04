@@ -52,8 +52,9 @@ def calc_L_N(c, n, k):
     @return: a 2D list containing estimators for all $(c, n)$, 
              entry [c, n] is the corresponding [L, N]
     """
-    LN_tab = [[None, [Fraction(1), Fraction(1)]]]
+    LN_tab = None
     if c == 0:
+        LN_tab = [[None, [Fraction(1), Fraction(1)]]]
         for n_val in range(2, n + 1):
             L, N = 1, n_val
             tot_cn_num = 0
@@ -69,6 +70,7 @@ def calc_L_N(c, n, k):
             N_est = (tot_cn_num * N - N_tmp1) / tmp_cn_num
             LN_tab[0].append([L_est, N_est])
     else:
+        LN_tab = calc_L_N(0, n, k)
         for n_val in range(c + 1, n + 1):
             L, N = c + 1, n_val
             tot_cn_num = 0
