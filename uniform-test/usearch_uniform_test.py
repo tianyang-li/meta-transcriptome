@@ -23,6 +23,12 @@ import datetime
 
 import contig_bowtie2_uniform_test
 
+def count_b6_map(db_len, b6s):
+    for b6 in b6s:
+        with open(b6, 'r') as fin:
+            for entry in fin:
+                entry = entry.strip().split("\t")
+
 def main(args):
     read_len, seq_db = None, None
     try:
@@ -39,7 +45,7 @@ def main(args):
         print >> sys.stderr, "Missing options or arguments!"
         sys.exit(2)
     db_len = contig_bowtie2_uniform_test.get_fasta_len(seq_db)
-    
+    count_b6_map(db_len, b6s)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
