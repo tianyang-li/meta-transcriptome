@@ -23,11 +23,12 @@ import getopt
 from Bio import SeqIO
 from math import exp
 
-def keep_contig(c, n, d):
+def keep_contig(c, n, d, percent):
     """
     c - effective contig length (# of possible read starting positions)
     n - number of reads on the contig
     d - maximum distance between consecutive read starting positions
+    percent - percentage of expected contig length to cut off
     
     @return: True if contig doesn't seem random 
     """
@@ -45,16 +46,16 @@ def keep_contig(c, n, d):
         prob_tot += p1
         p1 *= p0
     el /= prob_tot
-    if ((n - 1) * el > c):
+    if ((n - 1) * el * percent > c):
         return True
     else:
         return False
     
 
 def main(args):
-    read_len, kmer, contigs = None, None, None
+    read_len, kmer, contigs, percent = None, None, None, None
     try:
-        opts, b6s = getopt.getopt(args, 'r:k:c:')
+        opts, b6s = getopt.getopt(args, 'r:k:c:p:')
     except getopt.GetoptError as err:
         print >> sys.stderr, str(err)
         sys.exit(2)
@@ -68,7 +69,10 @@ def main(args):
         if o == '-r':
             # read length
             read_len = int(a)
-    if contigs == None or kmer == None or read_len == None or b6s == []:
+        if o == '-p':
+            # percent of expected contig length to cut off
+            percent = float(a) / 100.0
+    if contigs == None or kmer == None or read_len == None or b6s == [] or percent == None:
         print >> sys.stderr, "Missing options"
         sys.exit(2)
     
@@ -85,7 +89,7 @@ def main(args):
     
     for contig_id, contig_entry in contigs_len.items():
         if contig_entry[0] >= read_len and contig_entry[1] >= 3:
-            if keep_contig(contig_entry[0] - read_len + 1, contig_entry[1], read_len - kmer + 1):
+            if keep_contig(contig_entry[0] - read_len + 1, contig_entry[1], read_len - kmer + 1, percent):
                 print contig_id
 
 if __name__ == '__main__':
