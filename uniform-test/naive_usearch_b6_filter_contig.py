@@ -14,9 +14,41 @@
 #
 # You should have received a copy of the GNU General Public License
 
+"""
+filter out "random" contigs 
+"""
+
 import sys
 import getopt
 from Bio import SeqIO
+from math import exp
+
+def keep_contig(c, n, d):
+    """
+    c - effective contig length (# of possible read starting positions)
+    n - number of reads on the contig
+    d - maximum distance between consecutive read starting positions
+    
+    @return: True if contig doesn't seem random 
+    """
+    if n <= 2:
+        return False
+    # expression level: lambda (Poisson parameter)
+    pparam = n / (c + 2 * d)
+    # prob of no reads
+    p0 = exp(-pparam)
+    # prob when there are reads
+    p1 = 1 - p0
+    # expected length
+    el = 0.0
+    for i in range(1, d + 1):
+        el += (p1 * i)
+        p1 *= p0
+    if ((n - 1) * el > c):
+        return True
+    else:
+        return False
+    
 
 def main(args):
     read_len, kmer, contigs = None, None, None
@@ -39,6 +71,21 @@ def main(args):
         print >> sys.stderr, "Missing options"
         sys.exit(2)
     
+    contigs_len = {}
+    for rec in SeqIO.parse(contigs, 'fasta'):
+        if len(rec.seq) >= read_len:
+            contigs_len[rec.id] = [len(rec.seq), 0]
+    
+    for b6 in b6s:
+        with open(b6, 'r') as fin:
+            for entry in fin:
+                entry = entry.strip().split("\t")
+                contig_id = entry[1].split(" ")[0]
+                contigs_len[contig_id][1] += 1
+    
+    for contig_id, contig_entry in contigs_len.items():
+        if keep_contig(contig_entry[0] - read_len + 1, contig_entry[1], read_len - kmer + 1):
+            print contig_id
 
 if __name__ == '__main__':
     main(sys.argv[1:])
