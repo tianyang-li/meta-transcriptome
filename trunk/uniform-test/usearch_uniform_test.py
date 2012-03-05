@@ -66,16 +66,16 @@ def main(args):
     EMT = importr('EMT')
     mt = EMT.multinomial_test
     
-    for seq_entry, i in zip(db_len.values(), range(len(db_len))):
-        if seq_entry[2] > 2 and seq_entry[0] >= read_len:
+    for seq_entry, i in zip(db_len.items(), range(len(db_len))):
+        if seq_entry[1][2] > 2 and seq_entry[1][0] >= read_len:
             print >> sys.stderr, "####################"
-            print >> sys.stderr, i, " time ", datetime.datetime.now(), " len: ", seq_entry[0], " reads: ", seq_entry[2]
+            print >> sys.stderr, i, " time ", datetime.datetime.now(), " len: ", seq_entry[1][0], " reads: ", seq_entry[1][2]
             print >> sys.stderr, "####################"
             # test uniformity on the whole contig
-            pv_all = mt(robj.IntVector(seq_entry[1]), robj.FloatVector([1 / float(seq_entry[0])] * seq_entry[0]), MonteCarlo=True, ntrial=ntrial)
+            pv_all = mt(robj.IntVector(seq_entry[1][1]), robj.FloatVector([1 / float(seq_entry[1][0])] * seq_entry[1][0]), MonteCarlo=True, ntrial=ntrial)
             # test uniformity on the effective part of the contig
-            pv_eff = mt(robj.IntVector(seq_entry[1][:-(read_len - 1)]), robj.FloatVector([1 / float(seq_entry[0] - read_len + 1)] * (seq_entry[0] - read_len + 1)), MonteCarlo=True, ntrial=ntrial)
-            uni_test = {'len': seq_entry[0], 'reads': seq_entry[2], 'read_pos': seq_entry[1]}
+            pv_eff = mt(robj.IntVector(seq_entry[1][1][:-(read_len - 1)]), robj.FloatVector([1 / float(seq_entry[1][0] - read_len + 1)] * (seq_entry[1][0] - read_len + 1)), MonteCarlo=True, ntrial=ntrial)
+            uni_test = {'seq_id':seq_entry[0], 'len': seq_entry[1][0], 'reads': seq_entry[1][2], 'read_pos': seq_entry[1][1]}
             uni_test['all_test'] = pv_all[-1][0]
             uni_test['eff_test'] = pv_eff[-1][0]
             fout.write("%s\n" % json.dumps(uni_test))
