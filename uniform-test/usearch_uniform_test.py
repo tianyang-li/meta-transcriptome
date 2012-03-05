@@ -36,9 +36,9 @@ def count_b6_map(db_len, b6s):
                 
 
 def main(args):
-    read_len, seq_db, ntrial = None, None, None
+    read_len, seq_db, ntrial, fout = None, None, None, None
     try:
-        opts, b6s = getopt.getopt(args, 'l:s:t:')
+        opts, b6s = getopt.getopt(args, 'l:s:t:o:')
     except  getopt.GetoptError as err:
         print >> sys.stderr, str(err)
         sys.exit(2)
@@ -52,19 +52,25 @@ def main(args):
         if o == '-t':
             # # of trials used in monte carlo multinomial test
             ntrial = int(a)
-    if read_len == None or seq_db == None or b6s == [] or ntrial == None:
+        if o == '-o':
+            # output file
+            fout = a
+    if read_len == None or seq_db == None or b6s == [] or ntrial == None or fout == None:
         print >> sys.stderr, "Missing options or arguments!"
         sys.exit(2)
         
     db_len = contig_bowtie2_uniform_test.get_fasta_len(seq_db)
     count_b6_map(db_len, b6s)
     
+    fout = open(fout, 'w')
     EMT = importr('EMT')
     mt = EMT.multinomial_test
     
-    for seq_entry in seq_db.values():
+    for seq_entry in db_len.values():
         if seq_entry[2] > 2 and seq_entry[0] >= read_len:
-            print >> sys.stderr, datetime.datetime.now()
+            print >> sys.stderr, "####################"
+            print >> sys.stderr, datetime.datetime.now(), " len: ", seq_entry[0], " reads: ", seq_entry[2]
+            print >> sys.stderr, "####################"
             # test uniformity on the whole contig
             pv_all = mt(robj.IntVector(seq_entry[1]), robj.FloatVector([1 / float(seq_entry[0])] * seq_entry[0]), MonteCarlo=True, ntrial=ntrial)
             # test uniformity on the effective part of the contig
@@ -72,7 +78,9 @@ def main(args):
             uni_test = {'len': seq_entry[0], 'reads': seq_entry[2], 'read_pos': seq_entry[1]}
             uni_test['all_test'] = pv_all[-1][0]
             uni_test['eff_test'] = pv_eff[-1][0]
-            print json.dumps(uni_test)
+            fout.write("%s\n" % json.dumps(uni_test))
+            
+    fout.close()
 
 if __name__ == '__main__':
     main(sys.argv[1:])
