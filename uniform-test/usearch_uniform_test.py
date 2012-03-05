@@ -20,6 +20,7 @@ import rpy2.robjects as robj
 from rpy2.robjects.packages import importr
 from Bio import SeqIO
 import datetime
+import json
 
 import contig_bowtie2_uniform_test
 
@@ -35,22 +36,43 @@ def count_b6_map(db_len, b6s):
                 
 
 def main(args):
-    read_len, seq_db = None, None
+    read_len, seq_db, ntrial = None, None, None
     try:
-        opts, b6s = getopt.getopt(args, 'l:s:')
+        opts, b6s = getopt.getopt(args, 'l:s:t:')
     except  getopt.GetoptError as err:
         print >> sys.stderr, str(err)
         sys.exit(2)
     for o, a in opts:
         if o == '-l':
+            # read length, assumed to be all equal
             read_len = int(a)
         if o == '-s':
+            # sequence database
             seq_db = a
-    if read_len == None or seq_db == None or b6s == []:
+        if o == '-t':
+            # # of trials used in monte carlo multinomial test
+            ntrial = int(a)
+    if read_len == None or seq_db == None or b6s == [] or ntrial == None:
         print >> sys.stderr, "Missing options or arguments!"
         sys.exit(2)
+        
     db_len = contig_bowtie2_uniform_test.get_fasta_len(seq_db)
     count_b6_map(db_len, b6s)
+    
+    EMT = importr('EMT')
+    mt = EMT.multinomial_test
+    
+    for seq_entry in seq_db.values():
+        if seq_entry[2] > 2 and seq_entry[0] >= read_len:
+            print >> sys.stderr, datetime.datetime.now()
+            # test uniformity on the whole contig
+            pv_all = mt(robj.IntVector(seq_entry[1]), robj.FloatVector([1 / float(seq_entry[0])] * seq_entry[0]), MonteCarlo=True, ntrial=ntrial)
+            # test uniformity on the effective part of the contig
+            pv_eff = mt(robj.IntVector(seq_entry[1][:-(read_len - 1)]), robj.FloatVector([1 / float(seq_entry[0] - read_len + 1)] * (seq_entry[0] - read_len + 1)), MonteCarlo=True, ntrial=ntrial)
+            uni_test = {'len': seq_entry[0], 'reads': seq_entry[2], 'read_pos': seq_entry[1]}
+            uni_test['all_test'] = pv_all[-1][0]
+            uni_test['eff_test'] = pv_eff[-1][0]
+            print json.dumps(uni_test)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
