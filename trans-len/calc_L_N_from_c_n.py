@@ -44,11 +44,10 @@ def get_cn_num(L, N, c, n, k):
                     sum1 += 2
             else:
                 sum1 += (2 * ((L - (i + k + c + 1)) ** (N - n)))
+    if n == N:
+        sum1 += help_1.composition(L - c + 1, 2, k)
     if sum1 == 0:
-        if n == N:
-            sum1 = L - c
-        else:
-            return 0
+        return 0
     return sum1 * comb(N, n, exact=True) * help_1.read_split_contig(n, c, k)
 
 def calc_L_N(c, n, k):
