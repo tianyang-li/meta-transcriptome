@@ -31,19 +31,20 @@ def keep_contig(c, n, d):
     
     @return: True if contig doesn't seem random 
     """
-    if n <= 2:
-        return False
     # expression level: lambda (Poisson parameter)
-    pparam = n / (c + 2 * d)
+    pparam = float(n) / float(c + 2 * d)
     # prob of no reads
     p0 = exp(-pparam)
     # prob when there are reads
     p1 = 1 - p0
     # expected length
     el = 0.0
+    prob_tot = 0
     for i in range(1, d + 1):
         el += (p1 * i)
+        prob_tot += p1
         p1 *= p0
+    el /= prob_tot
     if ((n - 1) * el > c):
         return True
     else:
@@ -67,14 +68,13 @@ def main(args):
         if o == '-r':
             # read length
             read_len = int(a)
-    if contigs == None or kmer == None or read_len == None:
+    if contigs == None or kmer == None or read_len == None or b6s == []:
         print >> sys.stderr, "Missing options"
         sys.exit(2)
     
     contigs_len = {}
     for rec in SeqIO.parse(contigs, 'fasta'):
-        if len(rec.seq) >= read_len:
-            contigs_len[rec.id] = [len(rec.seq), 0]
+        contigs_len[str(rec.id)] = [len(rec.seq), 0]
     
     for b6 in b6s:
         with open(b6, 'r') as fin:
@@ -84,8 +84,9 @@ def main(args):
                 contigs_len[contig_id][1] += 1
     
     for contig_id, contig_entry in contigs_len.items():
-        if keep_contig(contig_entry[0] - read_len + 1, contig_entry[1], read_len - kmer + 1):
-            print contig_id
+        if contig_entry[0] >= read_len and contig_entry[1] >= 3:
+            if keep_contig(contig_entry[0] - read_len + 1, contig_entry[1], read_len - kmer + 1):
+                print contig_id
 
 if __name__ == '__main__':
     main(sys.argv[1:])
