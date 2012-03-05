@@ -36,7 +36,9 @@ def main(args):
     bf_cn = bf_cnt_cn(L, N, k)
     cn_cnt = []
     for c in range(L):
-        cn_cnt.append([[0]] * (N+1))
+        cn_cnt.append([])
+        for n in range(N+1):
+            cn_cnt[c].append([0])
     for c in range(L):
         for n in range(1,N+1):
             cn_cnt[c][n].append(cnt(L, N, c, n, k))
