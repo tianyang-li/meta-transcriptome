@@ -23,7 +23,7 @@ $0 < Y_{i + 1} - Y_i \leq k$
 
 import getopt
 import sys
-from scipy import comb
+from scipy.misc import comb
 from fractions import Fraction
 import json
 

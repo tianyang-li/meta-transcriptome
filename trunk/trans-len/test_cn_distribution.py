@@ -19,6 +19,8 @@ import getopt
 
 import calc_L_N_from_c_n
 import sim_c_n
+from numpy import array
+from scipy.stats import chisquare, chi2
 
 def main(args):
     runs, L, N, k = None, None, None, None
@@ -43,16 +45,12 @@ def main(args):
     
     sim_res = sim_c_n.sim_CN(L, k, runs, N)
     sim_cn_tab = []
+    sim_cn_tot = 0
     for i in range(L):
         sim_cn_tab.append([0] * (N + 1))
     for cn_tup in sim_res['sim_CN']:
         sim_cn_tab[cn_tup[1]][cn_tup[0]] += 1
-    sim_cn_tab = map(lambda c_list: map(lambda cnt: float(cnt) / float(len(sim_res['sim_CN'])), c_list), sim_cn_tab)
-    print "####"
-    for c_list in sim_cn_tab:
-        for prob in c_list:
-            print prob,
-        print ""
+        sim_cn_tot += 1
     
     calc_cn_tab = []
     calc_sum = 0
@@ -63,11 +61,19 @@ def main(args):
             calc_cn_tab[c].append(tmp_cnt)
             calc_sum += tmp_cnt
     calc_cn_tab = map(lambda c_list: map(lambda cnt: float(cnt) / float(calc_sum), c_list), calc_cn_tab)
-    print "####" 
-    for c_list in calc_cn_tab:
-        for prob in c_list:
-            print prob,
-        print ""   
+    
+    obs_freq = []
+    exp_freq = []
+    for sim_c, calc_c in zip(sim_cn_tab, calc_cn_tab):
+        for sim_freq, calc_prob in zip(sim_c, calc_c):
+            if calc_prob != 0:
+                obs_freq.append(sim_freq)
+                exp_freq.append(calc_prob * sim_cn_tot)
+    print obs_freq
+    print exp_freq
+    chi_stat, pv = chisquare(array(obs_freq), f_exp=array(exp_freq), ddof=(len(exp_freq) - 1))
+    pv = 1 - chi2.cdf(chi_stat, len(exp_freq) - 1)
+    print pv
 
 if __name__ == '__main__':
     main(sys.argv[1:])

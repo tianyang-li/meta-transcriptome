@@ -19,7 +19,7 @@ functions used in probability calculations
 """
 
 from nzmath.combinatorial import stirling2
-from scipy import comb, factorial
+from scipy.misc import comb, factorial
 
 def composition(r, n, k):
     """
