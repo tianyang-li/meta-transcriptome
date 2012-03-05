@@ -66,10 +66,10 @@ def main(args):
     EMT = importr('EMT')
     mt = EMT.multinomial_test
     
-    for seq_entry in db_len.values():
+    for seq_entry, i in zip(db_len.values(), range(len(db_len))):
         if seq_entry[2] > 2 and seq_entry[0] >= read_len:
             print >> sys.stderr, "####################"
-            print >> sys.stderr, datetime.datetime.now(), " len: ", seq_entry[0], " reads: ", seq_entry[2]
+            print >> sys.stderr, i, " time ", datetime.datetime.now(), " len: ", seq_entry[0], " reads: ", seq_entry[2]
             print >> sys.stderr, "####################"
             # test uniformity on the whole contig
             pv_all = mt(robj.IntVector(seq_entry[1]), robj.FloatVector([1 / float(seq_entry[0])] * seq_entry[0]), MonteCarlo=True, ntrial=ntrial)
