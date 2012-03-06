@@ -80,7 +80,8 @@ def main(args):
                     print rst_res
                     rst_res = rst_res.split("\n")[5]
                     if "Reject" in rst_res:
-                        res.write("%s\n" % contig_id)
+                        # id, length, # of reads
+                        res.write("%s %d %d\n" % (contig_id, contig_entry[0], len(contig_entry[1])))
                 
     
 if __name__ == '__main__':
