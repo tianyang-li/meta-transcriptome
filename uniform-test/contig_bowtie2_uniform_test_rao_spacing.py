@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from HTSeq import SAM_Reader
 
 # Copyright (C) 2012 Tianyang Li
 #
@@ -24,7 +25,7 @@ import getopt
 import rpy2.robjects as robj
 from rpy2.robjects.packages import importr
 from Bio import SeqIO
-import HTSeq
+from HTSeq import SAM_Reader
 import json
 
 def main(args):
@@ -50,6 +51,16 @@ def main(args):
         print >> sys.stderr, "Missing options"
         sys.exit(2)
     
+    contigs_len = {}
+    for rec in SeqIO.parse(contigs, 'fasta'):
+        contigs_len[rec.id] = [len(rec.seq), []]
+
+    for align in SAM_Reader(bowtie2):
+        if align.aligned:
+            contigs_len[align.iv.chrom][1].append(align.iv.start)
+
+    with open(fout, 'w') as res:
+        
     
 if __name__ == '__main__':
     main(sys.argv[1:])
