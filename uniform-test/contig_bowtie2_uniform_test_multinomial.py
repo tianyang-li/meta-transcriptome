@@ -52,9 +52,9 @@ def get_fasta_len(fasta_file):
     return fasta_len
 
 def main(args):
-    bowtie2, read_len, contigs, trial = None, None, None, None
+    bowtie2, read_len, contigs, trial, fout = None, None, None, None, None
     try:
-        opts, args = getopt.getopt(args, 'b:l:c:t:')
+        opts, args = getopt.getopt(args, 'b:l:c:t:o:')
     except getopt.GetoptError as err:
         print >> sys.stderr, str(err)
         sys.exit(2)
@@ -67,6 +67,8 @@ def main(args):
             contigs = a
         if o == '-t':
             trial = int(a)
+        if o == '-o':
+            fout = a
     if bowtie2 == None or read_len == None or contigs == None or trial == None:
         print >> sys.stderr, "Missing options!"
         sys.exit(2)
@@ -74,7 +76,7 @@ def main(args):
     count_bowtie2_align(bowtie2, contigs_len)
     EMT = importr('EMT')
     mt = EMT.multinomial_test
-    fout = open("uniform_len_p-value", 'w')
+    fout = open(fout, 'w')
     for contig_entry, i in zip(contigs_len.items(), range(1, len(contigs_len) + 1)):
         if contig_entry[1][2] > 2 and contig_entry[1][0] > read_len - 1:
             print >> sys.stderr, "#%d: length: %d, reads: %d, time: %s" % (i, contig_entry[1][0], contig_entry[1][2], datetime.datetime.now())
