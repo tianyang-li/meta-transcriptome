@@ -45,7 +45,10 @@ def read_split_contig(N, r, k):
     satisfying $0 < Y_{i + 1} - Y_i \leq k$
     """
     if r == 0:
-        return 1
+        if N > 0:
+            return 1
+        else:
+            return 0
     splits = 0
     for n in range(2, min(r + 2, N + 1)):
         splits += (factorial(n, exact=True) * stirling2(N, n) * composition(r, n - 1, k))
