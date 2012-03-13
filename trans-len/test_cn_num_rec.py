@@ -25,10 +25,13 @@ def main(args):
     
     for n_ in xrange(1, n):
         for c_ in xrange(c):
-            good_val = split(n, c, d)
-            test_val = (c + 1) * split(n - 1, c, d)
-            for i in xrange(1, d + 1):
-                test_val += split(n - 1, c - i, d)
+            good_val = split(n_, c_, d)
+            test_val = (c_ + 1) * split(n_ - 1, c_, d)
+            print test_val
+            for i in xrange(1, min(d, c_) + 1):
+                test_val += split(n_ - 1, c_ - i, d)
+                print n_ - 1, c_ - i, test_val
+            print n_, c_, good_val, test_val
             if test_val != good_val:
                 print >> sys.stderr, "you are wrong"
                 sys.exit(1)
