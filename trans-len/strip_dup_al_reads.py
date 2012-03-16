@@ -24,9 +24,9 @@ from HTSeq import SAM_Reader
 from Bio import SeqIO
 
 def main(args):
-    contigs, sam, fout_prefix = None, None, None
+    contigs, sam, fout_prefix, reads, fmt = None, None, None, None, None
     try:
-        opts, args = getopt.getopt(args, 'c:s:o:')
+        opts, args = getopt.getopt(args, 'c:s:o:r:f:')
     except getopt.GetoptError as err:
         print >> sys.stderr, str(err)
         sys.exit(1)
@@ -37,10 +37,24 @@ def main(args):
             sam = arg
         if opt == '-o':
             fout_prefix = arg
-    if contigs == None or sam == None or fout_prefix == None:
+        if opt == '-r':
+            reads = arg
+        if opt == '-f':
+            fmt = arg
+    if contigs == None or sam == None or fout_prefix == None or reads == None:
         print >> sys.stderr, "missing options"
         sys.exit(1)
+        
+    read_aln_count = {}
+    for rec in SeqIO.parse(reads, fmt):
+        read_aln_count[rec.id] = []    
+    contig_aln_ok = {}
+    for rec in SeqIO.parse(contigs, 'fasta'):
+        contig_aln_ok[rec.id] = True
     
+    for aln in SAM_Reader(sam):
+        if aln.aligned:
+            read_aln_count[aln.read.name].append(aln.iv.chrom)
     
 if __name__ == '__main__':
     main(sys.argv[1:])    
