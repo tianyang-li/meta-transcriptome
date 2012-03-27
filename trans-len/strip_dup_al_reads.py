@@ -20,14 +20,14 @@ remove reads that were aligned >= 2 times and contigs associated with them
 
 import sys
 import getopt
-from HTSeq import SAM_Reader
+import pysam
 from Bio import SeqIO
 
 def main(args):
     contigs, sam, fout_prefix, reads, fmt = None, None, None, None, None
     try:
         opts, args = getopt.getopt(args, 'c:s:o:r:f:')
-    except getopt.GetoptError as err:
+    except getopt.GetoptError as err:   
         print >> sys.stderr, str(err)
         sys.exit(1)
     for opt, arg in opts:
@@ -47,14 +47,35 @@ def main(args):
         
     read_aln_count = {}
     for rec in SeqIO.parse(reads, fmt):
-        read_aln_count[rec.id] = []    
-    contig_aln_ok = {}
-    for rec in SeqIO.parse(contigs, 'fasta'):
-        contig_aln_ok[rec.id] = True
+        read_aln_count[rec.id] = []
     
-    for aln in SAM_Reader(sam):
-        if aln.aligned:
-            read_aln_count[aln.read.name].append(aln.iv.chrom)
+    # TODO: use pysam
+    
+    dup_contig = set([])
+    with open(fout_prefix + "-good-reads-list", 'w') as good_reads:
+        for read in read_aln_count.keys():
+            contig_list = read_aln_count[read]
+            if len(contig_list) != 1:
+                more_flg = False
+                if len(contig_list) >= 2:                    
+                    print "#######################"
+                    more_flg = True
+                for bad_contig in contig_list:
+                    dup_contig.add(bad_contig)
+                    if more_flg:
+                        print bad_contig
+            else:
+                good_reads.write("%s\n" % read)
+    
+    contig_name = set([])
+    for rec in SeqIO.parse(contigs, 'fasta'):
+        contig_name.add(rec.id)
+        
+    good_contigs = contig_name - dup_contig
+    with open(fout_prefix + "-good-contigs-list", 'w') as gc_fout:
+        for good_contig in good_contigs:
+            gc_fout.write("%s\n" % good_contig)
+    
     
 if __name__ == '__main__':
     main(sys.argv[1:])    
