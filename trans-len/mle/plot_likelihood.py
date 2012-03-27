@@ -14,13 +14,32 @@
 #
 # You should have received a copy of the GNU General Public License
 
+from __future__ import division
+
 import sys
 import getopt
 
+import matplotlib
+matplotlib.rcParams['backend'] = "Qt4Agg"
+import math
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+
+def llss(c, n, L, N, d_max):
+    """
+    log likelihood (sufficient statistic)
+    """
+    ll = 0.0
+    for i in xrange(N - n, N + 1):
+        ll += math.log(i)
+    ll -= (N * math.log(L))
+    
+
 def main(args):
-    c, n = None, None
+    c, n , d_max = None, None, None
     try:
-        opts, args = getopt.getopt(args, 'c:n:')
+        opts, args = getopt.getopt(args, 'c:n:d:')
     except getopt.GetoptError as err:
         print >> sys.stderr, str(err)
         sys.exit(1)
@@ -29,10 +48,20 @@ def main(args):
             c = int(arg)
         if opt == '-n':
             n = int(arg)
-    if c == None or n == None:
+        if opt == '-d':
+            d_max = int(arg)
+    if c == None or n == None or d_max == None:
         print >> sys.stderr, "missing options"
         sys.exit(1)
     
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    
+    ax.set_xlabel('N')
+    ax.set_ylabel('L')
+    ax.set_zlabel('log likelihood')
+    
+    plt.show()
     
 if __name__ == '__main__':
     main(sys.argv[1:])    
