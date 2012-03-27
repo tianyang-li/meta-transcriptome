@@ -29,12 +29,25 @@ import matplotlib.pyplot as plt
 def llss(c, n, L, N, d_max):
     """
     log likelihood (sufficient statistic)
+    !!! it is assumed that the likelihood is never 0 !!!
     """
+    if n == N:
+        return math.log(L - c) - N * math.log(L)
     ll = 0.0
     for i in xrange(N - n, N + 1):
         ll += math.log(i)
     ll -= (N * math.log(L))
-    
+    pos_cnt = 0
+    cur_avail_pos = L - 2 * d_max - c - 1
+    if cur_avail_pos > 0:
+        pos_cnt = (L - 2 * d_max - c) * (cur_avail_pos ** (N - n))
+    for i in xrange(d_max):
+        cur_avail_pos = L - i - d_max - c - 1
+        if cur_avail_pos > 0:
+            pos_cnt += (2 * (cur_avail_pos ** (N - n)))
+    ll += math.log(pos_cnt)
+    return ll
+
 
 def main(args):
     c, n , d_max = None, None, None
@@ -56,6 +69,16 @@ def main(args):
     
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
+    
+    Ns, Ls, lls = [], [], []
+    
+    # TODO: calculate likelihood
+    
+    Ns = np.array(Ns)
+    Ls = np.array(Ls)
+    lls = np.array(lls)
+    
+    ax.scatter(Ns, Ls, lls)
     
     ax.set_xlabel('N')
     ax.set_ylabel('L')
