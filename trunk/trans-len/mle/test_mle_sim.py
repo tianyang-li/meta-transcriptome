@@ -21,9 +21,6 @@ test the MLE for estimating contig length and total number of reads
 import sys
 import getopt
 
-def mle(c, n):
-    
-
 def main(args):
     L, N, runs, d_max = None, None, None, None
     try:
