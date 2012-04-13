@@ -22,6 +22,8 @@ from HTSeq import SAM_Reader
 def main(args):
     # significance level
     a = None
+    if a == None:
+        print >> sys.stderr, "missing options"
 
 if __name__ == '__main__':
     main(sys.argv[1:])
